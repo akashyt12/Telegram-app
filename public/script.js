@@ -10,28 +10,40 @@ function generatePrediction(){
         "Confidence: " + confidence + "%";
 }
 
+// ✅ Monetag Rewarded Integration
 function watchAd(minutes){
-    alert("Simulated Monetag Ad Watched!");
 
-    accessTime = minutes * 60;
+    show_10667523('pop').then(() => {
 
-    if(interval) clearInterval(interval);
+        // Ad watched successfully
+        accessTime = minutes * 60;
 
-    interval = setInterval(()=>{
-        if(accessTime <= 0){
-            clearInterval(interval);
-            document.getElementById("timer").innerText="Access Locked";
-            return;
-        }
-        accessTime--;
-        document.getElementById("timer").innerText=
-            "Access: " + Math.floor(accessTime/60)+"m "+(accessTime%60)+"s";
-    },1000);
+        if(interval) clearInterval(interval);
 
-    generatePrediction();
+        interval = setInterval(()=>{
+            if(accessTime <= 0){
+                clearInterval(interval);
+                document.getElementById("timer").innerText="Access Locked";
+                return;
+            }
+            accessTime--;
+            document.getElementById("timer").innerText=
+                "Access: " + 
+                Math.floor(accessTime/60)+"m "+(accessTime%60)+"s";
+        },1000);
+
+        generatePrediction();
+
+    }).catch(e => {
+
+        console.log("Ad error:", e);
+        alert("Ad failed or skipped. Please try again.");
+
+    });
+
 }
 
-// Chart
+// 📊 Chart
 const ctx = document.getElementById('trendChart');
 new Chart(ctx,{
     type:'line',
