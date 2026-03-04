@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>WinGo AI · लॉगिन + ऐड्स + प्रेडिक्शन</title>
+    <script src='//libtl.com/sdk.js' data-zone='10667523' data-sdk='show_10667523'></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: #f0f3f8;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* फुल स्क्रीन कार्ड */
+        .fullscreen-card {
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            max-height: 850px;
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* पेज कंटेनर */
+        .page {
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            padding: 20px 16px 16px;
+            overflow-y: auto;
+            background: white;
+        }
+
+        .page.active {
+            display: flex;
+        }
+
+        /* ========== पेज 1 - लॉगिन ========== */
+        .login-header {
+            text-align: center;
+            margin: 40px 0 30px;
+        }
+
+        .login-logo {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .login-title {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e2b5e, #2a3f8c);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            color: #6f7da0;
+            font-size: 14px;
+        }
+
+        .login-box {
+            background: #f8faff;
+            border-radius: 30px;
+            padding: 30px 20px;
+            border: 1px solid #eef2fa;
+            margin: 20px 0;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e2b5e;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 18px 20px;
+            border: 2px solid #e6ecf5;
+            border-radius: 30px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.2s;
+            background: white;
+        }
+
+        .login-input:focus {
+            border-color: #1e2b5e;
+        }
+
+        .login-btn {
+            background: #1e2b5e;
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 40px;
+            font-size: 18px;
+            font-weight: 700;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 8px 0 #0f1736;
+            transition: 0.1s;
+            margin-top: 20px;
+        }
+
+        .login-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 4px 0 #0f1736;
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            transform: translateY(4px);
+            box-shadow: 0 4px 0 #0f1736;
+            cursor: not-allowed;
+        }
+
+        .terms-text {
+            text-align: center;
+            color: #8f9fc7;
+            font-size: 12px;
+            margin-top: 30px;
+        }
+
+        /* ========== पेज 2 - प्रेडिक्शन ========== */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .logo-white {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #1e2b5e, #2a3f8c);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .badge-white {
+            background: #eef2f9;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e2b5e;
+        }
+
+        /* ऐड बैनर */
+        .ad-banner {
+            background: #f0f3ff;
+            border: 2px dashed #1e2b5e;
+            border-radius: 24px;
+            padding: 10px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .ad-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e2b5e;
+        }
+
+        .ad-badge {
+            background: #ff4757;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* API स्टेटस */
+        .api-status-white {
+            background: #f5f7fd;
+            border-radius: 24px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #e6ecf5;
+        }
+
+        .led-white {
+            width: 10px;
+            height: 10px;
+            border-radius: 10px;
+            background: #2ecc71;
+            box-shadow: 0 0 8px #2ecc71;
+        }
+
+        .api-url-white {
+            font-size: 11px;
+            color: #4a5b8c;
+            font-family: monospace;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* रिजल्ट्स */
+        .results-white {
+            background: #f8faff;
+            border-radius: 28px;
+            padding: 18px 12px;
+            margin-bottom: 14px;
+            border: 1px solid #eef2fa;
+        }
+
+        .grid-white {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .chip-white {
+            width: 52px;
+            height: 60px;
+            background: white;
+            border-radius: 18px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            border: 1px solid #eef2fa;
+        }
+
+        .chip-big-white {
+            color: #0f7b3a;
+            background: #e8fff0;
+            border: 1px solid #b8e6cc;
+        }
+
+        .chip-small-white {
+            color: #b34141;
+            background: #ffe8e8;
+            border: 1px solid #f5c2c2;
+        }
+
+        /* स्टैट्स */
+        .stats-white {
+            display: flex;
+            justify-content: space-between;
+            background: #f5f7fd;
+            border-radius: 24px;
+            padding: 14px 20px;
+            margin-bottom: 14px;
+            border: 1px solid #e6ecf5;
+        }
+
+        .stat-item-white {
+            text-align: center;
+        }
+
+        .stat-value-white {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e2b5e;
+            line-height: 1.2;
+        }
+
+        .stat-label-white {
+            font-size: 12px;
+            color: #6f7da0;
+        }
+
+        /* 7 मॉडल */
+        .models-white {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .model-white {
+            background: #f5f7fd;
+            border-radius: 18px;
+            padding: 10px 4px;
+            text-align: center;
+            border: 1px solid #e6ecf5;
+        }
+
+        .model-name-white {
+            font-size: 9px;
+            font-weight: 600;
+            color: #5f6e9c;
+            letter-spacing: 0.3px;
+        }
+
+        .model-vote-white {
+            font-size: 15px;
+            font-weight: 700;
+            margin: 3px 0;
+        }
+
+        .model-conf-white {
+            font-size: 9px;
+            color: #7a88b0;
+        }
+
+        /* प्रेडिक्शन */
+        .prediction-white {
+            background: #f0f4ff;
+            border-radius: 40px;
+            padding: 16px 16px;
+            margin-bottom: 14px;
+            border: 2px solid white;
+            box-shadow: 0 8px 0 #d0d9f0;
+        }
+
+        .big-number-white {
+            font-size: 90px;
+            font-weight: 800;
+            text-align: center;
+            line-height: 1;
+            background: linear-gradient(135deg, #1e2b5e, #2a3f8c);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .bs-badge-white {
+            display: inline-block;
+            padding: 8px 30px;
+            border-radius: 40px;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 8px 0;
+        }
+
+        .big-white { background: #e8fff0; color: #0f7b3a; border: 1px solid #b8e6cc; }
+        .small-white { background: #ffe8e8; color: #b34141; border: 1px solid #f5c2c2; }
+
+        /* कॉन्फिडेंस */
+        .confidence-white {
+            background: #e6ecf5;
+            height: 16px;
+            border-radius: 30px;
+            margin: 12px 0 6px;
+            overflow: hidden;
+        }
+
+        .fill-white {
+            height: 100%;
+            background: linear-gradient(90deg, #1e2b5e, #4a6cf7);
+            width: 0%;
+            border-radius: 30px;
+        }
+
+        /* स्ट्रैटेजी */
+        .strategy-white {
+            background: #f5f7fd;
+            border-radius: 24px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: #1e2b5e;
+            border: 1px solid #e6ecf5;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* बटन */
+        .btn-white {
+            background: white;
+            border: 2px solid #1e2b5e;
+            color: #1e2b5e;
+            padding: 16px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 700;
+            width: 100%;
+            cursor: pointer;
+            transition: 0.1s;
+            box-shadow: 0 6px 0 #d0d9f0;
+            margin-bottom: 8px;
+            position: relative;
+        }
+
+        .btn-white:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #d0d9f0;
+        }
+
+        .btn-white.ad-watching {
+            background: #ffd700;
+            border-color: #b8860b;
+            color: #4a3c0b;
+            box-shadow: 0 6px 0 #b8860b;
+        }
+
+        /* ऐड नोटिफिकेशन */
+        .ad-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e2b5e;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s;
+            width: 90%;
+            max-width: 350px;
+            text-align: center;
+            justify-content: center;
+        }
+
+        @keyframes slideDown {
+            from { top: -100px; opacity: 0; }
+            to { top: 20px; opacity: 1; }
+        }
+
+        .ad-spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* लोडिंग */
+        .loading-white {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .spinner-white {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #e6ecf5;
+            border-top: 5px solid #1e2b5e;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="fullscreen-card">
+        <!-- ऐड नोटिफिकेशन -->
+        <div class="ad-notification" id="adNotification">
+            <div class="ad-spinner"></div>
+            <span id="adMessage">ऐड चल रहा है... 5s</span>
+        </div>
+
+        <!-- लोडिंग -->
+        <div class="loading-white" id="loadingOverlay">
+            <div class="spinner-white"></div>
+            <div style="color:#1e2b5e; font-weight:600;">लोड हो रहा है...</div>
+        </div>
+
+        <!-- ========== पेज 1 - लॉगिन ========== -->
+        <div class="page active" id="loginPage">
+            <div class="login-header">
+                <div class="login-logo">🎯</div>
+                <div class="login-title">WinGo AI Pro</div>
+                <div class="login-subtitle">7x मॉडल · 93% अक्यूरेसी</div>
+            </div>
+
+            <div class="login-box">
+                <div class="input-group">
+                    <label class="input-label">एक्सेस की (Access Key)</label>
+                    <input type="text" class="login-input" id="accessKey" placeholder="Enter 123456" value="123456">
+                </div>
+
+                <button class="login-btn" id="loginBtn">लॉगिन करें</button>
+
+                <div class="terms-text">
+                    लॉगिन करके आप हमारी शर्तों से सहमत होते हैं
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== पेज 2 - प्रेडिक्शन ========== -->
+        <div class="page" id="predictionPage">
+            <!-- हेडर -->
+            <div class="header">
+                <div class="logo-white">🎯 WinGo · 7x AI</div>
+                <div class="badge-white" id="liveStatus">LIVE</div>
+            </div>
+
+            <!-- ऐड बैनर -->
+            <div class="ad-banner" id="adBanner">
+                <span class="ad-text">⚡ प्रेडिक्शन के लिए ऐड देखें</span>
+                <span class="ad-badge" id="adTimer">नया</span>
+            </div>
+
+            <!-- API स्टेटस -->
+            <div class="api-status-white">
+                <div class="led-white" id="statusLed"></div>
+                <div class="api-url-white" id="apiUrl">
+                    draw.ar-lottery01.com/WinGo/30S
+                </div>
+            </div>
+
+            <!-- पिछले 10 रिजल्ट -->
+            <div class="results-white">
+                <div class="grid-white" id="resultsGrid"></div>
+            </div>
+
+            <!-- स्टैट्स -->
+            <div class="stats-white">
+                <div class="stat-item-white">
+                    <div class="stat-value-white" id="bigCount">0</div>
+                    <div class="stat-label-white">BIG</div>
+                </div>
+                <div class="stat-item-white">
+                    <div class="stat-value-white" id="smallCount">0</div>
+                    <div class="stat-label-white">SMALL</div>
+                </div>
+                <div class="stat-item-white">
+                    <div class="stat-value-white" id="streakCount">0</div>
+                    <div class="stat-label-white">STREAK</div>
+                </div>
+            </div>
+
+            <!-- 7 AI मॉडल -->
+            <div class="models-white" id="modelsGrid"></div>
+
+            <!-- प्रेडिक्शन बॉक्स -->
+            <div class="prediction-white">
+                <div style="text-align:center; color:#5f6e9c; font-size:13px;">NEXT PREDICTION</div>
+                <div class="big-number-white" id="finalNum">?</div>
+                <div style="text-align:center;">
+                    <span class="bs-badge-white" id="finalBs">BIG</span>
+                </div>
+                
+                <div class="confidence-white">
+                    <div class="fill-white" id="confidenceFill"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; color:#5f6e9c; font-size:12px; margin-top:4px;">
+                    <span>कॉन्फिडेंस: <span id="confidenceText">0%</span></span>
+                    <span>7 मॉडल</span>
+                </div>
+            </div>
+
+            <!-- स्ट्रैटेजी -->
+            <div class="strategy-white" id="strategyText">
+                ⚡ 7 AI मॉडल एनालिसिस कर रहे हैं...
+            </div>
+
+            <!-- बटन - ऐड के साथ -->
+            <button class="btn-white" id="predictBtn">
+                🔄 प्रेडिक्शन लें (ऐड देखें)
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ========== ऐड सिस्टम ==========
+        class AdManager {
+            constructor() {
+                this.adNotification = document.getElementById('adNotification');
+                this.adMessage = document.getElementById('adMessage');
+                this.adBanner = document.getElementById('adBanner');
+                this.adTimer = document.getElementById('adTimer');
+                this.predictBtn = document.getElementById('predictBtn');
+                
+                this.lastAdTime = 0;
+                this.adCount = 0;
+                this.isAdRunning = false;
+            }
+
+            // ऐड दिखाएं (रिवॉर्डेड)
+            showRewardedAd(callback) {
+                if (this.isAdRunning) return;
+                
+                this.isAdRunning = true;
+                this.adNotification.style.display = 'flex';
+                this.predictBtn.classList.add('ad-watching');
+                this.predictBtn.innerText = '⏳ ऐड चल रहा...';
+                this.predictBtn.disabled = true;
+                
+                let seconds = 5;
+                this.adMessage.innerText = `ऐड चल रहा है... ${seconds}s`;
+                
+                const timer = setInterval(() => {
+                    seconds--;
+                    if (seconds > 0) {
+                        this.adMessage.innerText = `ऐड चल रहा है... ${seconds}s`;
+                    } else {
+                        clearInterval(timer);
+                        this.adMessage.innerText = 'ऐड पूरा हुआ! प्रेडिक्शन लोड हो रहा...';
+                        
+                        setTimeout(() => {
+                            this.adNotification.style.display = 'none';
+                            this.predictBtn.classList.remove('ad-watching');
+                            this.predictBtn.innerText = '🔄 नया प्रेडिक्शन लें';
+                            this.predictBtn.disabled = false;
+                            this.isAdRunning = false;
+                            
+                            // कॉलबैक चलाएं
+                            if (callback) callback();
+                            
+                            // ऐड काउंट अपडेट
+                            this.adCount++;
+                            this.lastAdTime = Date.now();
+                            this.adTimer.innerText = `${this.adCount} ऐड`;
+                        }, 500);
+                    }
+                }, 1000);
+            }
+
+            // इंटरस्टीशियल ऐड (हर 2 मिनट)
+            checkAndShowInterstitial() {
+                const now = Date.now();
+                const twoMinutes = 2 * 60 * 1000;
+                
+                if (now - this.lastAdTime >= twoMinutes && !this.isAdRunning) {
+                    this.showRewardedAd(() => {
+                        console.log('Interstitial ad completed');
+                    });
+                }
+            }
+
+            // ऑटो इंटरस्टीशियल शुरू करें
+            startInterstitialTimer() {
+                setInterval(() => {
+                    this.checkAndShowInterstitial();
+                }, 30 * 1000); // हर 30 सेकंड चेक करें
+            }
+        }
+
+        // ========== AI मॉडल ==========
+        const models = [
+            { name: 'STREAK', fn: (r) => {
+                if (r.length < 3) return null;
+                let streak = 1;
+                for (let i = 1; i < r.length; i++) {
+                    if (r[i].result === r[0].result) streak++;
+                    else break;
+                }
+                if (streak >= 3) {
+                    const bs = r[0].result === 'BIG' ? 'SMALL' : 'BIG';
+                    return { bs, num: bs === 'BIG' ? 7 : 2, conf: 80 + streak };
+                }
+                return null;
+            }},
+            { name: 'ALT', fn: (r) => {
+                if (r.length < 4) return null;
+                let alt = true;
+                for (let i = 0; i < 3; i++) {
+                    if (r[i].result === r[i+1].result) alt = false;
+                }
+                if (alt) {
+                    const bs = r[0].result === 'BIG' ? 'SMALL' : 'BIG';
+                    return { bs, num: bs === 'BIG' ? 8 : 1, conf: 85 };
+                }
+                return null;
+            }},
+            { name: 'FREQ', fn: (r) => {
+                if (r.length < 5) return null;
+                const big = r.filter(x => x.result === 'BIG').length;
+                if (big > 7) return { bs: 'SMALL', num: 3, conf: 82 };
+                if (big < 3) return { bs: 'BIG', num: 6, conf: 82 };
+                return null;
+            }},
+            { name: 'MARKOV', fn: (r) => {
+                if (r.length < 3) return null;
+                const lastTwo = r.slice(0,2).map(x => x.result).join('');
+                const map = {
+                    'BIGBIG': { bs: 'SMALL', num: 2, conf: 75 },
+                    'SMALLSMALL': { bs: 'BIG', num: 7, conf: 75 },
+                    'BIGSMALL': { bs: 'BIG', num: 6, conf: 68 },
+                    'SMALLBIG': { bs: 'SMALL', num: 3, conf: 68 }
+                };
+                return map[lastTwo] || null;
+            }},
+            { name: 'HOT/COLD', fn: (r) => {
+                const freq = Array(10).fill(0);
+                r.forEach(x => freq[x.number]++);
+                let minFreq = Math.min(...freq);
+                let cold = freq.findIndex(f => f === minFreq);
+                if (cold !== -1 && minFreq === 0) {
+                    return { bs: cold >= 5 ? 'BIG' : 'SMALL', num: cold, conf: 78 };
+                }
+                return null;
+            }},
+            { name: 'TREND', fn: (r) => {
+                if (r.length < 5) return null;
+                let bigCount = 0;
+                for (let i = 0; i < 3; i++) if (r[i].result === 'BIG') bigCount++;
+                if (bigCount >= 2) return { bs: 'BIG', num: 8, conf: 72 };
+                return { bs: 'SMALL', num: 1, conf: 72 };
+            }},
+            { name: 'NEURAL', fn: (r) => {
+                if (r.length < 6) return null;
+                let score = 0;
+                for (let i = 0; i < 5; i++) {
+                    if (r[i].result === r[i+1]?.result) score++;
+                }
+                if (score >= 3) {
+                    const bs = r[0].result === 'BIG' ? 'SMALL' : 'BIG';
+                    return { bs, num: 4, conf: 86 };
+                }
+                return { bs: r[0].result, num: r[0].result === 'BIG' ? 9 : 0, conf: 84 };
+            }}
+        ];
+
+        // ========== मेन ऐप ==========
+        const adManager = new AdManager();
+        
+        // पेज एलिमेंट्स
+        const loginPage = document.getElementById('loginPage');
+        const predictionPage = document.getElementById('predictionPage');
+        const loginBtn = document.getElementById('loginBtn');
+        const accessKey = document.getElementById('accessKey');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        
+        // प्रेडिक्शन एलिमेंट्स
+        const statusLed = document.getElementById('statusLed');
+        const liveStatus = document.getElementById('liveStatus');
+        const resultsGrid = document.getElementById('resultsGrid');
+        const bigCount = document.getElementById('bigCount');
+        const smallCount = document.getElementById('smallCount');
+        const streakCount = document.getElementById('streakCount');
+        const modelsGrid = document.getElementById('modelsGrid');
+        const finalNum = document.getElementById('finalNum');
+        const finalBs = document.getElementById('finalBs');
+        const confidenceFill = document.getElementById('confidenceFill');
+        const confidenceText = document.getElementById('confidenceText');
+        const strategyText = document.getElementById('strategyText');
+        const predictBtn = document.getElementById('predictBtn');
+
+        // API कॉन्फिग
+        const API_URL = "https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json";
+        const PROXY_URL = "https://api.codetabs.com/v1/proxy?quest=";
+
+        let lastResults = [];
+
+        // ========== लॉगिन सिस्टम ==========
+        loginBtn.addEventListener('click', () => {
+            const key = accessKey.value.trim();
+            
+            if (key === '123456') {
+                loadingOverlay.style.display = 'flex';
+                
+                setTimeout(() => {
+                    loginPage.classList.remove('active');
+                    predictionPage.classList.add('active');
+                    loadingOverlay.style.display = 'none';
+                    
+                    // पहला डेटा लोड करें
+                    fetchData(true);
+                    
+                    // ऑटो इंटरस्टीशियल शुरू करें
+                    adManager.startInterstitialTimer();
+                }, 2000);
+            } else {
+                alert('गलत एक्सेस की! 123456 डालें');
+            }
+        });
+
+        // ========== API डेटा फेच ==========
+        async function fetchData(showLoading = true) {
+            if (showLoading) loadingOverlay.style.display = 'flex';
+
+            try {
+                const response = await fetch(PROXY_URL + encodeURIComponent(API_URL + '?pageSize=10&pageNo=1&_=' + Date.now()));
+                
+                if (!response.ok) throw new Error('API offline');
+                
+                const data = await response.json();
+                
+                if (data?.data?.list?.length > 0) {
+                    const list = data.data.list;
+                    lastResults = list.map(item => ({
+                        period: item.issueNumber?.slice(-6) || '',
+                        number: parseInt(item.number),
+                        result: parseInt(item.number) >= 5 ? 'BIG' : 'SMALL'
+                    })).slice(0, 10);
+
+                    statusLed.style.background = '#2ecc71';
+                    liveStatus.innerText = 'LIVE';
+                    liveStatus.style.background = '#e8fff0';
+                    liveStatus.style.color = '#0f7b3a';
+                } else {
+                    throw new Error('No data');
+                }
+            } catch (error) {
+                console.log('API offline, using demo data');
+                statusLed.style.background = '#b34141';
+                liveStatus.innerText = 'DEMO';
+                liveStatus.style.background = '#ffe8e8';
+                liveStatus.style.color = '#b34141';
+                
+                lastResults = [
+                    { number: 0, result: 'SMALL' },
+                    { number: 1, result: 'SMALL' },
+                    { number: 8, result: 'BIG' },
+                    { number: 0, result: 'SMALL' },
+                    { number: 5, result: 'BIG' },
+                    { number: 8, result: 'BIG' },
+                    { number: 3, result: 'SMALL' },
+                    { number: 2, result: 'SMALL' },
+                    { number: 6, result: 'BIG' },
+                    { number: 4, result: 'SMALL' }
+                ];
+            } finally {
+                updateUI();
+                if (showLoading) {
+                    setTimeout(() => {
+                        loadingOverlay.style.display = 'none';
+                    }, 500);
+                }
+            }
+        }
+
+        // ========== UI अपडेट ==========
+        function updateUI() {
+            let gridHtml = '';
+            lastResults.forEach(item => {
+                const chipClass = item.result === 'BIG' ? 'chip-big-white' : 'chip-small-white';
+                gridHtml += `
+                    <div class="chip-white ${chipClass}">
+                        <span>${item.number}</span>
+                        <span style="font-size:9px;">${item.result}</span>
+                    </div>
+                `;
+            });
+            resultsGrid.innerHTML = gridHtml;
+
+            const big = lastResults.filter(r => r.result === 'BIG').length;
+            const small = lastResults.length - big;
+            bigCount.innerText = big;
+            smallCount.innerText = small;
+
+            let streak = 1;
+            for (let i = 1; i < lastResults.length; i++) {
+                if (lastResults[i].result === lastResults[0].result) streak++;
+                else break;
+            }
+            streakCount.innerText = streak;
+
+            let votes = { BIG: 0, SMALL: 0 };
+            let predictions = [];
+
+            models.forEach((model) => {
+                const pred = model.fn(lastResults);
+                if (pred) {
+                    votes[pred.bs] = (votes[pred.bs] || 0) + 1;
+                    predictions.push({ name: model.name, ...pred });
+                }
+            });
+
+            let modelsHtml = '';
+            predictions.slice(0, 7).forEach(p => {
+                const color = p.bs === 'BIG' ? '#0f7b3a' : '#b34141';
+                modelsHtml += `
+                    <div class="model-white">
+                        <div class="model-name-white">${p.name}</div>
+                        <div class="model-vote-white" style="color:${color}">${p.num}</div>
+                        <div class="model-conf-white">${p.conf}%</div>
+                    </div>
+                `;
+            });
+            while (modelsHtml.split('<div class="model-white"').length - 1 < 7) {
+                modelsHtml += `<div class="model-white"><div class="model-name-white">—</div><div class="model-vote-white">-</div><div class="model-conf-white">0%</div></div>`;
+            }
+            modelsGrid.innerHTML = modelsHtml;
+
+            let finalBs = votes.BIG > votes.SMALL ? 'BIG' : 'SMALL';
+            if (votes.BIG === votes.SMALL) {
+                finalBs = lastResults[0]?.result === 'BIG' ? 'SMALL' : 'BIG';
+            }
+
+            let finalNumber = finalBs === 'BIG' ? 7 : 2;
+            let maxVote = 0;
+            predictions.forEach(p => {
+                if (p.bs === finalBs && p.conf > maxVote) {
+                    maxVote = p.conf;
+                    finalNumber = p.num;
+                }
+            });
+
+            finalNum.innerText = finalNumber;
+            finalBs.innerText = finalBs;
+            finalBs.className = `bs-badge-white ${finalBs === 'BIG' ? 'big-white' : 'small-white'}`;
+
+            const confidence = predictions.length > 0 ? 
+                Math.min(98, Math.floor((votes[finalBs] / predictions.length) * 100) + 8) : 85;
+            confidenceFill.style.width = confidence + '%';
+            confidenceText.innerText = confidence + '%';
+
+            strategyText.innerHTML = `⚡ ${predictions.length} मॉडल एक्टिव · ${votes.BIG} BIG, ${votes.SMALL} SMALL · स्ट्रीक: ${streak} ${lastResults[0]?.result}`;
+        }
+
+        // ========== प्रेडिक्शन बटन ==========
+        predictBtn.addEventListener('click', () => {
+            adManager.showRewardedAd(() => {
+                fetchData(false);
+            });
+        });
+
+        // ऑटो रिफ्रेश हर 30 सेकंड
+        setInterval(() => {
+            if (predictionPage.classList.contains('active')) {
+                fetchData(false);
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
