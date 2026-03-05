@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WinGo AI · लॉगिन + ऐड्स + प्रेडिक्शन</title>
+    <title>WinGo AI · मोनेटाइजेशन ऐड्स</title>
+    <!-- Monetag Ads Script -->
     <script src='//libtl.com/sdk.js' data-zone='10667523' data-sdk='show_10667523'></script>
+    <script src="https://acscdn.com/script.js#6299cfaf6ab8b15b58e26ad9c9c84f8b"></script>
     <style>
         * {
             margin: 0;
@@ -21,9 +23,10 @@
             justify-content: center;
             padding: 0;
             margin: 0;
+            overflow: hidden;
         }
 
-        /* फुल स्क्रीन कार्ड */
+        /* फुल स्क्रीन कार्ड - बिल्कुल नो स्क्रॉल */
         .fullscreen-card {
             width: 100%;
             max-width: 400px;
@@ -34,17 +37,18 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.08);
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* पेज कंटेनर */
+        /* पेज कंटेनर - फ्लेक्स कॉलम */
         .page {
-            width: 100%;
-            height: 100%;
             display: none;
             flex-direction: column;
-            padding: 20px 16px 16px;
-            overflow-y: auto;
-            background: white;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
         }
 
         .page.active {
@@ -52,19 +56,33 @@
         }
 
         /* ========== पेज 1 - लॉगिन ========== */
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 20px 16px 16px;
+            overflow-y: auto;
+        }
+
         .login-header {
             text-align: center;
             margin: 40px 0 30px;
         }
 
         .login-logo {
-            font-size: 50px;
+            font-size: 60px;
             margin-bottom: 15px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
         .login-title {
-            font-size: 28px;
-            font-weight: 700;
+            font-size: 32px;
+            font-weight: 800;
             background: linear-gradient(135deg, #1e2b5e, #2a3f8c);
             -webkit-background-clip: text;
             background-clip: text;
@@ -132,26 +150,25 @@
             box-shadow: 0 4px 0 #0f1736;
         }
 
-        .login-btn:disabled {
-            opacity: 0.6;
-            transform: translateY(4px);
-            box-shadow: 0 4px 0 #0f1736;
-            cursor: not-allowed;
-        }
-
-        .terms-text {
-            text-align: center;
-            color: #8f9fc7;
-            font-size: 12px;
-            margin-top: 30px;
-        }
-
         /* ========== पेज 2 - प्रेडिक्शन ========== */
+        .prediction-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 16px 16px 12px;
+            overflow: hidden;
+        }
+
+        /* फिक्स्ड हेडर */
+        .fixed-header {
+            flex-shrink: 0;
+        }
+
         .header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .logo-white {
@@ -172,49 +189,48 @@
             color: #1e2b5e;
         }
 
-        /* ऐड बैनर */
-        .ad-banner {
-            background: #f0f3ff;
-            border: 2px dashed #1e2b5e;
-            border-radius: 24px;
-            padding: 10px 16px;
-            margin-bottom: 16px;
+        /* ऐड बैनर - रियल मोनेटाइजेशन */
+        .ad-banner-container {
+            width: 100%;
+            height: 70px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 20px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
-        }
-
-        .ad-text {
-            font-size: 13px;
-            font-weight: 600;
-            color: #1e2b5e;
-        }
-
-        .ad-badge {
-            background: #ff4757;
+            justify-content: center;
             color: white;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 12px;
             font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #4a3f7a;
+            transition: 0.1s;
+            flex-shrink: 0;
+        }
+
+        .ad-banner-container:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #4a3f7a;
+        }
+
+        .ad-banner-container img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            filter: brightness(0) invert(1);
         }
 
         /* API स्टेटस */
         .api-status-white {
             background: #f5f7fd;
             border-radius: 24px;
-            padding: 12px 16px;
-            margin-bottom: 16px;
+            padding: 10px 14px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             border: 1px solid #e6ecf5;
+            flex-shrink: 0;
         }
 
         .led-white {
@@ -235,34 +251,42 @@
             text-overflow: ellipsis;
         }
 
+        /* स्क्रॉल करने लायक कंटेंट */
+        .scrollable-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 2px;
+            margin-bottom: 8px;
+        }
+
         /* रिजल्ट्स */
         .results-white {
             background: #f8faff;
-            border-radius: 28px;
-            padding: 18px 12px;
-            margin-bottom: 14px;
+            border-radius: 24px;
+            padding: 16px 10px;
+            margin-bottom: 12px;
             border: 1px solid #eef2fa;
         }
 
         .grid-white {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
             justify-content: center;
         }
 
         .chip-white {
-            width: 52px;
-            height: 60px;
+            width: 50px;
+            height: 58px;
             background: white;
-            border-radius: 18px;
+            border-radius: 16px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             font-weight: 700;
             font-size: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.02);
             border: 1px solid #eef2fa;
         }
 
@@ -283,9 +307,9 @@
             display: flex;
             justify-content: space-between;
             background: #f5f7fd;
-            border-radius: 24px;
-            padding: 14px 20px;
-            margin-bottom: 14px;
+            border-radius: 20px;
+            padding: 12px 16px;
+            margin-bottom: 12px;
             border: 1px solid #e6ecf5;
         }
 
@@ -294,14 +318,14 @@
         }
 
         .stat-value-white {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
             color: #1e2b5e;
             line-height: 1.2;
         }
 
         .stat-label-white {
-            font-size: 12px;
+            font-size: 11px;
             color: #6f7da0;
         }
 
@@ -309,48 +333,48 @@
         .models-white {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin-bottom: 14px;
+            gap: 6px;
+            margin-bottom: 12px;
         }
 
         .model-white {
             background: #f5f7fd;
-            border-radius: 18px;
-            padding: 10px 4px;
+            border-radius: 16px;
+            padding: 8px 2px;
             text-align: center;
             border: 1px solid #e6ecf5;
         }
 
         .model-name-white {
-            font-size: 9px;
+            font-size: 8px;
             font-weight: 600;
             color: #5f6e9c;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.2px;
         }
 
         .model-vote-white {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 700;
-            margin: 3px 0;
+            margin: 2px 0;
         }
 
         .model-conf-white {
-            font-size: 9px;
+            font-size: 8px;
             color: #7a88b0;
         }
 
         /* प्रेडिक्शन */
         .prediction-white {
             background: #f0f4ff;
-            border-radius: 40px;
-            padding: 16px 16px;
-            margin-bottom: 14px;
+            border-radius: 36px;
+            padding: 14px 12px;
+            margin-bottom: 12px;
             border: 2px solid white;
-            box-shadow: 0 8px 0 #d0d9f0;
+            box-shadow: 0 6px 0 #d0d9f0;
         }
 
         .big-number-white {
-            font-size: 90px;
+            font-size: 80px;
             font-weight: 800;
             text-align: center;
             line-height: 1;
@@ -362,11 +386,11 @@
 
         .bs-badge-white {
             display: inline-block;
-            padding: 8px 30px;
+            padding: 6px 24px;
             border-radius: 40px;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
-            margin: 8px 0;
+            margin: 6px 0;
         }
 
         .big-white { background: #e8fff0; color: #0f7b3a; border: 1px solid #b8e6cc; }
@@ -375,9 +399,9 @@
         /* कॉन्फिडेंस */
         .confidence-white {
             background: #e6ecf5;
-            height: 16px;
+            height: 14px;
             border-radius: 30px;
-            margin: 12px 0 6px;
+            margin: 10px 0 4px;
             overflow: hidden;
         }
 
@@ -391,10 +415,10 @@
         /* स्ट्रैटेजी */
         .strategy-white {
             background: #f5f7fd;
-            border-radius: 24px;
-            padding: 12px 16px;
-            margin-bottom: 12px;
-            font-size: 13px;
+            border-radius: 20px;
+            padding: 10px 14px;
+            margin-bottom: 10px;
+            font-size: 12px;
             color: #1e2b5e;
             border: 1px solid #e6ecf5;
             white-space: nowrap;
@@ -402,12 +426,17 @@
             text-overflow: ellipsis;
         }
 
-        /* बटन */
+        /* फिक्स्ड फुटर बटन */
+        .fixed-footer {
+            flex-shrink: 0;
+            margin-top: auto;
+        }
+
         .btn-white {
             background: white;
             border: 2px solid #1e2b5e;
             color: #1e2b5e;
-            padding: 16px;
+            padding: 14px;
             border-radius: 50px;
             font-size: 18px;
             font-weight: 700;
@@ -424,48 +453,38 @@
             box-shadow: 0 2px 0 #d0d9f0;
         }
 
-        .btn-white.ad-watching {
-            background: #ffd700;
-            border-color: #b8860b;
-            color: #4a3c0b;
-            box-shadow: 0 6px 0 #b8860b;
-        }
-
         /* ऐड नोटिफिकेशन */
         .ad-notification {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1e2b5e;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-weight: 600;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
             z-index: 9999;
             display: none;
             align-items: center;
-            gap: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            animation: slideDown 0.3s;
-            width: 90%;
-            max-width: 350px;
-            text-align: center;
             justify-content: center;
-        }
-
-        @keyframes slideDown {
-            from { top: -100px; opacity: 0; }
-            to { top: 20px; opacity: 1; }
+            flex-direction: column;
+            gap: 20px;
+            color: white;
+            text-align: center;
         }
 
         .ad-spinner {
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-top: 3px solid white;
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top: 5px solid white;
             border-radius: 50%;
             animation: spin 1s linear infinite;
+        }
+
+        .ad-timer {
+            font-size: 40px;
+            font-weight: 700;
+            color: #ffd700;
         }
 
         @keyframes spin {
@@ -473,216 +492,224 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* लोडिंग */
-        .loading-white {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(5px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .spinner-white {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #e6ecf5;
-            border-top: 5px solid #1e2b5e;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        /* फुटर */
+        .footer-white {
+            text-align: center;
+            color: #8f9fc7;
+            font-size: 10px;
+            padding: 4px 0;
         }
     </style>
 </head>
 <body>
     <div class="fullscreen-card">
-        <!-- ऐड नोटिफिकेशन -->
+        <!-- ऐड नोटिफिकेशन - यूजर को दिखेगा -->
         <div class="ad-notification" id="adNotification">
             <div class="ad-spinner"></div>
-            <span id="adMessage">ऐड चल रहा है... 5s</span>
-        </div>
-
-        <!-- लोडिंग -->
-        <div class="loading-white" id="loadingOverlay">
-            <div class="spinner-white"></div>
-            <div style="color:#1e2b5e; font-weight:600;">लोड हो रहा है...</div>
+            <div style="font-size: 20px; font-weight: 600;" id="adTitle">ऐड चल रहा है...</div>
+            <div class="ad-timer" id="adTimer">5</div>
+            <div style="font-size: 14px; color: #ccc;">कृपया प्रतीक्षा करें</div>
         </div>
 
         <!-- ========== पेज 1 - लॉगिन ========== -->
         <div class="page active" id="loginPage">
-            <div class="login-header">
-                <div class="login-logo">🎯</div>
-                <div class="login-title">WinGo AI Pro</div>
-                <div class="login-subtitle">7x मॉडल · 93% अक्यूरेसी</div>
-            </div>
-
-            <div class="login-box">
-                <div class="input-group">
-                    <label class="input-label">एक्सेस की (Access Key)</label>
-                    <input type="text" class="login-input" id="accessKey" placeholder="Enter 123456" value="123456">
+            <div class="login-container">
+                <div class="login-header">
+                    <div class="login-logo">🎰</div>
+                    <div class="login-title">WinGo AI Pro</div>
+                    <div class="login-subtitle">7x AI मॉडल · 93% अक्यूरेसी</div>
                 </div>
 
-                <button class="login-btn" id="loginBtn">लॉगिन करें</button>
+                <div class="login-box">
+                    <div class="input-group">
+                        <label class="input-label">🔑 एक्सेस की (Access Key)</label>
+                        <input type="text" class="login-input" id="accessKey" placeholder="Enter 123456" value="123456">
+                    </div>
 
-                <div class="terms-text">
-                    लॉगिन करके आप हमारी शर्तों से सहमत होते हैं
+                    <button class="login-btn" id="loginBtn">लॉगिन करें</button>
+
+                    <div class="terms-text" style="text-align:center; color:#8f9fc7; font-size:12px; margin-top:30px;">
+                        लॉगिन करके आप ऐड देखने के लिए सहमत होते हैं
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- ========== पेज 2 - प्रेडिक्शन ========== -->
         <div class="page" id="predictionPage">
-            <!-- हेडर -->
-            <div class="header">
-                <div class="logo-white">🎯 WinGo · 7x AI</div>
-                <div class="badge-white" id="liveStatus">LIVE</div>
-            </div>
+            <div class="prediction-container">
+                <!-- फिक्स्ड हेडर -->
+                <div class="fixed-header">
+                    <div class="header">
+                        <div class="logo-white">🎯 WinGo · 7x AI</div>
+                        <div class="badge-white" id="liveStatus">LIVE</div>
+                    </div>
 
-            <!-- ऐड बैनर -->
-            <div class="ad-banner" id="adBanner">
-                <span class="ad-text">⚡ प्रेडिक्शन के लिए ऐड देखें</span>
-                <span class="ad-badge" id="adTimer">नया</span>
-            </div>
+                    <!-- Monetag ऐड बैनर -->
+                    <div class="ad-banner-container" id="adBanner">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z'/%3E%3C/svg%3E" alt="ad">
+                        <span>ऐड देखें और प्रेडिक्शन पाएं</span>
+                    </div>
 
-            <!-- API स्टेटस -->
-            <div class="api-status-white">
-                <div class="led-white" id="statusLed"></div>
-                <div class="api-url-white" id="apiUrl">
-                    draw.ar-lottery01.com/WinGo/30S
+                    <!-- API स्टेटस -->
+                    <div class="api-status-white">
+                        <div class="led-white" id="statusLed"></div>
+                        <div class="api-url-white" id="apiUrl">
+                            draw.ar-lottery01.com/WinGo/30S
+                        </div>
+                    </div>
+                </div>
+
+                <!-- स्क्रॉल करने लायक कंटेंट -->
+                <div class="scrollable-content">
+                    <!-- पिछले 10 रिजल्ट -->
+                    <div class="results-white">
+                        <div class="grid-white" id="resultsGrid"></div>
+                    </div>
+
+                    <!-- स्टैट्स -->
+                    <div class="stats-white">
+                        <div class="stat-item-white">
+                            <div class="stat-value-white" id="bigCount">0</div>
+                            <div class="stat-label-white">BIG</div>
+                        </div>
+                        <div class="stat-item-white">
+                            <div class="stat-value-white" id="smallCount">0</div>
+                            <div class="stat-label-white">SMALL</div>
+                        </div>
+                        <div class="stat-item-white">
+                            <div class="stat-value-white" id="streakCount">0</div>
+                            <div class="stat-label-white">STREAK</div>
+                        </div>
+                    </div>
+
+                    <!-- 7 AI मॉडल -->
+                    <div class="models-white" id="modelsGrid"></div>
+
+                    <!-- प्रेडिक्शन बॉक्स -->
+                    <div class="prediction-white">
+                        <div style="text-align:center; color:#5f6e9c; font-size:12px;">NEXT PREDICTION</div>
+                        <div class="big-number-white" id="finalNum">?</div>
+                        <div style="text-align:center;">
+                            <span class="bs-badge-white" id="finalBs">BIG</span>
+                        </div>
+                        
+                        <div class="confidence-white">
+                            <div class="fill-white" id="confidenceFill"></div>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; color:#5f6e9c; font-size:11px; margin-top:4px;">
+                            <span>कॉन्फिडेंस: <span id="confidenceText">0%</span></span>
+                            <span>7 मॉडल</span>
+                        </div>
+                    </div>
+
+                    <!-- स्ट्रैटेजी -->
+                    <div class="strategy-white" id="strategyText">
+                        ⚡ 7 AI मॉडल एनालिसिस कर रहे हैं...
+                    </div>
+                </div>
+
+                <!-- फिक्स्ड फुटर बटन -->
+                <div class="fixed-footer">
+                    <button class="btn-white" id="predictBtn">
+                        📺 ऐड देखें और प्रेडिक्शन लें
+                    </button>
+                    <div class="footer-white">
+                        हर प्रेडिक्शन से पहले ऐड अनिवार्य
+                    </div>
                 </div>
             </div>
-
-            <!-- पिछले 10 रिजल्ट -->
-            <div class="results-white">
-                <div class="grid-white" id="resultsGrid"></div>
-            </div>
-
-            <!-- स्टैट्स -->
-            <div class="stats-white">
-                <div class="stat-item-white">
-                    <div class="stat-value-white" id="bigCount">0</div>
-                    <div class="stat-label-white">BIG</div>
-                </div>
-                <div class="stat-item-white">
-                    <div class="stat-value-white" id="smallCount">0</div>
-                    <div class="stat-label-white">SMALL</div>
-                </div>
-                <div class="stat-item-white">
-                    <div class="stat-value-white" id="streakCount">0</div>
-                    <div class="stat-label-white">STREAK</div>
-                </div>
-            </div>
-
-            <!-- 7 AI मॉडल -->
-            <div class="models-white" id="modelsGrid"></div>
-
-            <!-- प्रेडिक्शन बॉक्स -->
-            <div class="prediction-white">
-                <div style="text-align:center; color:#5f6e9c; font-size:13px;">NEXT PREDICTION</div>
-                <div class="big-number-white" id="finalNum">?</div>
-                <div style="text-align:center;">
-                    <span class="bs-badge-white" id="finalBs">BIG</span>
-                </div>
-                
-                <div class="confidence-white">
-                    <div class="fill-white" id="confidenceFill"></div>
-                </div>
-                <div style="display:flex; justify-content:space-between; color:#5f6e9c; font-size:12px; margin-top:4px;">
-                    <span>कॉन्फिडेंस: <span id="confidenceText">0%</span></span>
-                    <span>7 मॉडल</span>
-                </div>
-            </div>
-
-            <!-- स्ट्रैटेजी -->
-            <div class="strategy-white" id="strategyText">
-                ⚡ 7 AI मॉडल एनालिसिस कर रहे हैं...
-            </div>
-
-            <!-- बटन - ऐड के साथ -->
-            <button class="btn-white" id="predictBtn">
-                🔄 प्रेडिक्शन लें (ऐड देखें)
-            </button>
         </div>
     </div>
 
     <script>
-        // ========== ऐड सिस्टम ==========
+        // ========== मोनेटाइजेशन ऐड सिस्टम ==========
         class AdManager {
             constructor() {
                 this.adNotification = document.getElementById('adNotification');
-                this.adMessage = document.getElementById('adMessage');
-                this.adBanner = document.getElementById('adBanner');
                 this.adTimer = document.getElementById('adTimer');
+                this.adTitle = document.getElementById('adTitle');
                 this.predictBtn = document.getElementById('predictBtn');
-                
-                this.lastAdTime = 0;
-                this.adCount = 0;
                 this.isAdRunning = false;
             }
 
-            // ऐड दिखाएं (रिवॉर्डेड)
+            // रिवॉर्डेड ऐड दिखाएं
             showRewardedAd(callback) {
-                if (this.isAdRunning) return;
-                
+                if (this.isAdRunning) {
+                    alert('ऐड पहले से चल रहा है, कृपया प्रतीक्षा करें');
+                    return;
+                }
+
                 this.isAdRunning = true;
+                
+                // ऐड नोटिफिकेशन दिखाएं
                 this.adNotification.style.display = 'flex';
-                this.predictBtn.classList.add('ad-watching');
-                this.predictBtn.innerText = '⏳ ऐड चल रहा...';
                 this.predictBtn.disabled = true;
+                this.predictBtn.style.opacity = '0.7';
                 
                 let seconds = 5;
-                this.adMessage.innerText = `ऐड चल रहा है... ${seconds}s`;
+                this.adTimer.innerText = seconds;
+                this.adTitle.innerText = 'ऐड चल रहा है...';
                 
+                // हर सेकंड टाइमर अपडेट करें
                 const timer = setInterval(() => {
                     seconds--;
-                    if (seconds > 0) {
-                        this.adMessage.innerText = `ऐड चल रहा है... ${seconds}s`;
-                    } else {
+                    this.adTimer.innerText = seconds;
+                    
+                    if (seconds <= 0) {
                         clearInterval(timer);
-                        this.adMessage.innerText = 'ऐड पूरा हुआ! प्रेडिक्शन लोड हो रहा...';
                         
+                        // ऐड खत्म होने का मैसेज
+                        this.adTitle.innerText = 'ऐड पूरा हुआ!';
+                        this.adTimer.innerText = '✓';
+                        
+                        // 1 सेकंड बाद ऐड हटाएं और प्रेडिक्शन लोड करें
                         setTimeout(() => {
                             this.adNotification.style.display = 'none';
-                            this.predictBtn.classList.remove('ad-watching');
-                            this.predictBtn.innerText = '🔄 नया प्रेडिक्शन लें';
                             this.predictBtn.disabled = false;
+                            this.predictBtn.style.opacity = '1';
                             this.isAdRunning = false;
                             
-                            // कॉलबैक चलाएं
+                            // कॉलबैक चलाएं (प्रेडिक्शन लोड करें)
                             if (callback) callback();
                             
-                            // ऐड काउंट अपडेट
-                            this.adCount++;
-                            this.lastAdTime = Date.now();
-                            this.adTimer.innerText = `${this.adCount} ऐड`;
-                        }, 500);
+                            // Monetag का रियल ऐड भी दिखाएं
+                            if (typeof show_10667523 === 'function') {
+                                show_10667523({
+                                    type: 'inApp',
+                                    inAppSettings: {
+                                        frequency: 1,
+                                        capping: 0.1,
+                                        interval: 30,
+                                        timeout: 2,
+                                        everyPage: false
+                                    }
+                                }).then(() => {
+                                    console.log('Monetag ad completed');
+                                });
+                            }
+                        }, 1000);
                     }
                 }, 1000);
             }
 
-            // इंटरस्टीशियल ऐड (हर 2 मिनट)
-            checkAndShowInterstitial() {
-                const now = Date.now();
-                const twoMinutes = 2 * 60 * 1000;
-                
-                if (now - this.lastAdTime >= twoMinutes && !this.isAdRunning) {
-                    this.showRewardedAd(() => {
-                        console.log('Interstitial ad completed');
-                    });
-                }
+            // बैनर ऐड क्लिक
+            showBannerAd() {
+                this.showRewardedAd(() => {
+                    // बैनर क्लिक पर भी प्रेडिक्शन
+                    fetchData(false);
+                });
             }
 
-            // ऑटो इंटरस्टीशियल शुरू करें
+            // ऑटो इंटरस्टीशियल (हर 2 मिनट)
             startInterstitialTimer() {
                 setInterval(() => {
-                    this.checkAndShowInterstitial();
-                }, 30 * 1000); // हर 30 सेकंड चेक करें
+                    if (document.getElementById('predictionPage').classList.contains('active')) {
+                        this.showRewardedAd(() => {
+                            console.log('Auto interstitial ad completed');
+                        });
+                    }
+                }, 2 * 60 * 1000); // हर 2 मिनट
             }
         }
 
@@ -770,7 +797,7 @@
         const predictionPage = document.getElementById('predictionPage');
         const loginBtn = document.getElementById('loginBtn');
         const accessKey = document.getElementById('accessKey');
-        const loadingOverlay = document.getElementById('loadingOverlay');
+        const adBanner = document.getElementById('adBanner');
         
         // प्रेडिक्शन एलिमेंट्स
         const statusLed = document.getElementById('statusLed');
@@ -798,19 +825,14 @@
             const key = accessKey.value.trim();
             
             if (key === '123456') {
-                loadingOverlay.style.display = 'flex';
+                loginPage.classList.remove('active');
+                predictionPage.classList.add('active');
                 
-                setTimeout(() => {
-                    loginPage.classList.remove('active');
-                    predictionPage.classList.add('active');
-                    loadingOverlay.style.display = 'none';
-                    
-                    // पहला डेटा लोड करें
-                    fetchData(true);
-                    
-                    // ऑटो इंटरस्टीशियल शुरू करें
-                    adManager.startInterstitialTimer();
-                }, 2000);
+                // पहला डेटा लोड करें
+                fetchData(true);
+                
+                // ऑटो इंटरस्टीशियल शुरू करें
+                adManager.startInterstitialTimer();
             } else {
                 alert('गलत एक्सेस की! 123456 डालें');
             }
@@ -818,8 +840,6 @@
 
         // ========== API डेटा फेच ==========
         async function fetchData(showLoading = true) {
-            if (showLoading) loadingOverlay.style.display = 'flex';
-
             try {
                 const response = await fetch(PROXY_URL + encodeURIComponent(API_URL + '?pageSize=10&pageNo=1&_=' + Date.now()));
                 
@@ -837,8 +857,6 @@
 
                     statusLed.style.background = '#2ecc71';
                     liveStatus.innerText = 'LIVE';
-                    liveStatus.style.background = '#e8fff0';
-                    liveStatus.style.color = '#0f7b3a';
                 } else {
                     throw new Error('No data');
                 }
@@ -846,8 +864,6 @@
                 console.log('API offline, using demo data');
                 statusLed.style.background = '#b34141';
                 liveStatus.innerText = 'DEMO';
-                liveStatus.style.background = '#ffe8e8';
-                liveStatus.style.color = '#b34141';
                 
                 lastResults = [
                     { number: 0, result: 'SMALL' },
@@ -863,11 +879,6 @@
                 ];
             } finally {
                 updateUI();
-                if (showLoading) {
-                    setTimeout(() => {
-                        loadingOverlay.style.display = 'none';
-                    }, 500);
-                }
             }
         }
 
@@ -950,19 +961,17 @@
             strategyText.innerHTML = `⚡ ${predictions.length} मॉडल एक्टिव · ${votes.BIG} BIG, ${votes.SMALL} SMALL · स्ट्रीक: ${streak} ${lastResults[0]?.result}`;
         }
 
-        // ========== प्रेडिक्शन बटन ==========
+        // ========== बटन क्लिक ==========
         predictBtn.addEventListener('click', () => {
             adManager.showRewardedAd(() => {
                 fetchData(false);
             });
         });
 
-        // ऑटो रिफ्रेश हर 30 सेकंड
-        setInterval(() => {
-            if (predictionPage.classList.contains('active')) {
-                fetchData(false);
-            }
-        }, 30000);
+        // बैनर ऐड क्लिक
+        adBanner.addEventListener('click', () => {
+            adManager.showBannerAd();
+        });
     </script>
 </body>
 </html>
