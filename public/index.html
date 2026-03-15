@@ -1,977 +1,841 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>WinGo AI · मोनेटाइजेशन ऐड्स</title>
-    <!-- Monetag Ads Script -->
-    <script src='//libtl.com/sdk.js' data-zone='10667523' data-sdk='show_10667523'></script>
-    <script src="https://acscdn.com/script.js#6299cfaf6ab8b15b58e26ad9c9c84f8b"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        }
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover'>
+<link href='https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Space+Mono:wght@400;700&display=swap' rel='stylesheet'>
+<!-- MONTAG ADS SDK -->
+<script src='//libtl.com/sdk.js' data-zone='10667523' data-sdk='show_10667523'></script>
+<style>
+:root { 
+    --neon-red: #ff003c; 
+    --neon-gold: #FFD700; 
+    --dark-bg: #1a0005; 
+    --body-gradient: linear-gradient(135deg, #33000b 0%, #1a0005 50%, #0a0002 100%); 
+}
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    user-select: none; 
+    -webkit-tap-highlight-color: transparent; 
+}
+body { 
+    background: var(--dark-bg); 
+    width: 100vw; 
+    height: 100vh; 
+    font-family: 'Orbitron', sans-serif; 
+    overflow: hidden;
+    position: fixed;
+}
 
-        body {
-            background: #f0f3f8;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            margin: 0;
-            overflow: hidden;
-        }
+/* Splash Screen */
+#splashScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--body-gradient);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    animation: fadeOut 0.5s ease 2.5s forwards;
+}
 
-        /* फुल स्क्रीन कार्ड - बिल्कुल नो स्क्रॉल */
-        .fullscreen-card {
-            width: 100%;
-            max-width: 400px;
-            height: 100vh;
-            max-height: 850px;
-            background: white;
-            border-radius: 32px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
+.splash-logo {
+    width: 120px;
+    height: 120px;
+    background: var(--body-gradient);
+    border-radius: 50%;
+    border: 3px solid var(--neon-red);
+    box-shadow: 0 0 50px rgba(255,0,60,0.8), inset 0 0 30px rgba(255,0,60,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 1.5s infinite, float 3s ease-in-out infinite;
+    margin-bottom: 30px;
+    overflow: hidden;
+}
 
-        /* पेज कंटेनर - फ्लेक्स कॉलम */
-        .page {
-            display: none;
-            flex-direction: column;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-            position: relative;
-        }
+.splash-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.95;
+}
 
-        .page.active {
-            display: flex;
-        }
+.splash-text {
+    color: var(--neon-gold);
+    font-size: 28px;
+    font-weight: 900;
+    text-shadow: 0 0 20px var(--neon-gold);
+    letter-spacing: 4px;
+    margin-bottom: 15px;
+    animation: glowPulse 2s infinite;
+}
 
-        /* ========== पेज 1 - लॉगिन ========== */
-        .login-container {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            padding: 20px 16px 16px;
-            overflow-y: auto;
-        }
+.splash-sub {
+    color: var(--neon-red);
+    font-size: 14px;
+    text-shadow: 0 0 10px var(--neon-red);
+    letter-spacing: 2px;
+}
 
-        .login-header {
-            text-align: center;
-            margin: 40px 0 30px;
-        }
+.loader {
+    width: 200px;
+    height: 4px;
+    background: rgba(255,0,60,0.2);
+    border-radius: 4px;
+    margin-top: 40px;
+    overflow: hidden;
+    position: relative;
+}
 
-        .login-logo {
-            font-size: 60px;
-            margin-bottom: 15px;
-            animation: bounce 2s infinite;
-        }
+.loader::after {
+    content: '';
+    position: absolute;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, var(--neon-red), var(--neon-gold), var(--neon-red), transparent);
+    animation: load 2s linear forwards;
+}
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
+/* Login Screen */
+#loginScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--body-gradient);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1500;
+    padding: 20px;
+}
 
-        .login-title {
-            font-size: 32px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #1e2b5e, #2a3f8c);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 8px;
-        }
+.login-box {
+    width: 90%;
+    max-width: 320px;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(10px);
+    border: 2px solid var(--neon-red);
+    border-radius: 30px;
+    padding: 30px 20px;
+    box-shadow: 0 0 50px rgba(255,0,60,0.3), inset 0 0 30px rgba(255,0,60,0.2);
+    animation: slideUp 0.5s ease;
+}
 
-        .login-subtitle {
-            color: #6f7da0;
-            font-size: 14px;
-        }
+.login-title {
+    color: var(--neon-gold);
+    font-size: 24px;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 10px;
+    text-shadow: 0 0 15px var(--neon-gold);
+    letter-spacing: 2px;
+}
 
-        .login-box {
-            background: #f8faff;
-            border-radius: 30px;
-            padding: 30px 20px;
-            border: 1px solid #eef2fa;
-            margin: 20px 0;
-        }
+.login-sub {
+    color: var(--neon-red);
+    font-size: 12px;
+    text-align: center;
+    margin-bottom: 30px;
+    text-shadow: 0 0 8px var(--neon-red);
+}
 
-        .input-group {
-            margin-bottom: 20px;
-        }
+.ad-counter {
+    background: rgba(255,0,60,0.1);
+    border: 1px solid var(--neon-red);
+    border-radius: 50px;
+    padding: 15px;
+    margin-bottom: 25px;
+    text-align: center;
+}
 
-        .input-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: #1e2b5e;
-            margin-bottom: 8px;
-            display: block;
-        }
+.counter-text {
+    color: #fff;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
 
-        .login-input {
-            width: 100%;
-            padding: 18px 20px;
-            border: 2px solid #e6ecf5;
-            border-radius: 30px;
-            font-size: 16px;
-            outline: none;
-            transition: 0.2s;
-            background: white;
-        }
+.counter-number {
+    color: var(--neon-gold);
+    font-size: 32px;
+    font-weight: 900;
+    text-shadow: 0 0 20px var(--neon-gold);
+}
 
-        .login-input:focus {
-            border-color: #1e2b5e;
-        }
+.counter-label {
+    color: var(--neon-red);
+    font-size: 12px;
+}
 
-        .login-btn {
-            background: #1e2b5e;
-            color: white;
-            border: none;
-            padding: 18px;
-            border-radius: 40px;
-            font-size: 18px;
-            font-weight: 700;
-            width: 100%;
-            cursor: pointer;
-            box-shadow: 0 8px 0 #0f1736;
-            transition: 0.1s;
-            margin-top: 20px;
-        }
+.login-btn {
+    width: 100%;
+    height: 50px;
+    background: linear-gradient(180deg, #1a0005, #000);
+    border: 2px solid var(--neon-red);
+    border-radius: 25px;
+    color: var(--neon-gold);
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 0 0 10px var(--neon-gold);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    transition: all 0.2s ease;
+}
 
-        .login-btn:active {
-            transform: translateY(4px);
-            box-shadow: 0 4px 0 #0f1736;
-        }
+.login-btn:active {
+    transform: scale(0.96);
+    background: var(--neon-red);
+    color: #fff;
+    border-color: #fff;
+    box-shadow: 0 0 30px var(--neon-red);
+}
 
-        /* ========== पेज 2 - प्रेडिक्शन ========== */
-        .prediction-container {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            padding: 16px 16px 12px;
-            overflow: hidden;
-        }
+.login-btn.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    border-color: #666;
+    color: #666;
+}
 
-        /* फिक्स्ड हेडर */
-        .fixed-header {
-            flex-shrink: 0;
-        }
+.login-info {
+    color: #888;
+    font-size: 11px;
+    text-align: center;
+    margin-top: 20px;
+}
 
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
+/* Main App */
+#miniBtn { 
+    width: 70px; 
+    height: 70px; 
+    background: var(--body-gradient); 
+    border-radius: 50%; 
+    border: 2.5px solid var(--neon-red); 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.9), 0 0 20px rgba(255, 0, 60, 0.8); 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    cursor: pointer; 
+    animation: float 3s ease-in-out infinite; 
+    overflow: hidden; 
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    z-index: 100;
+}
+#miniBtn:active { 
+    transform: scale(0.92); 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.9), 0 0 30px rgba(255, 0, 60, 1); 
+}
+#miniBtn img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    opacity: 0.95; 
+}
+#main { 
+    width: 280px; 
+    background: var(--body-gradient); 
+    border-radius: 24px; 
+    padding: 16px; 
+    border: 2px solid var(--neon-red); 
+    box-shadow: 0 25px 60px rgba(0,0,0,0.95), 0 0 25px rgba(255,0,60,0.6), inset 0 0 25px rgba(255,0,60,0.3); 
+    display: none; 
+    flex-direction: column; 
+    position: absolute; 
+    margin: 0; 
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
+    backdrop-filter: blur(2px); 
+    z-index: 1000; 
+}
+.header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding-bottom: 10px; 
+    cursor: move; 
+    margin-bottom: 8px; 
+    border-bottom: 1.5px solid rgba(255, 0, 60, 0.5); 
+}
+.brand-title { 
+    font-weight: 900; 
+    font-size: 13px; 
+    color: var(--neon-gold); 
+    text-shadow: 0 0 12px var(--neon-gold); 
+    letter-spacing: 2px; 
+    display: flex; 
+    align-items: center; 
+    gap: 6px; 
+}
+.brand-title::before { 
+    content:''; 
+    width: 8px; 
+    height:8px; 
+    background:var(--neon-red); 
+    border-radius:50%; 
+    box-shadow: 0 0 12px var(--neon-red); 
+    animation: pulse 1.2s infinite; 
+}
+#cls-btn { 
+    color: var(--neon-red); 
+    font-size: 18px; 
+    font-weight: bold; 
+    cursor: pointer; 
+    text-shadow: 0 0 8px var(--neon-red); 
+    padding: 5px 10px; 
+}
+#cls-btn:active { 
+    transform: scale(0.85); 
+    color: #fff; 
+}
+.display-bezel { 
+    width: 100%; 
+    height: 120px; 
+    background: #0a0002; 
+    border-radius: 16px; 
+    padding: 5px; 
+    border: 2px solid var(--neon-red); 
+    box-shadow: 0 0 15px rgba(255,0,60,0.4), inset 0 0 25px rgba(255,0,60,0.3); 
+    position: relative; 
+}
+.screen { 
+    width: 100%; 
+    height: 100%; 
+    background: radial-gradient(circle at center, #2a0008 0%, var(--dark-bg) 100%); 
+    border-radius: 12px; 
+    border: 1px solid rgba(255, 0, 60, 0.6); 
+    box-shadow: inset 0 0 20px rgba(255, 0, 60, 0.4); 
+    position: relative; 
+    overflow: hidden; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: space-between; 
+    padding: 8px 10px; 
+}
+.screen::after { 
+    content: ''; 
+    position: absolute; 
+    inset: 0; 
+    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.5) 0px, rgba(0,0,0,0.5) 1px, transparent 1px, transparent 2px); 
+    pointer-events: none; 
+    opacity: 0.6; 
+}
+.screen-top { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    z-index: 10; 
+    width: 100%; 
+    white-space: nowrap; 
+    overflow: hidden; 
+}
+.status-led { 
+    font-size: 10px; 
+    color: var(--neon-red); 
+    font-weight: 700; 
+    letter-spacing: 1.5px; 
+    display: flex; 
+    align-items: center; 
+    gap: 5px; 
+    text-shadow: 0 0 8px var(--neon-red); 
+}
+.led-dot { 
+    width: 6px; 
+    height: 6px; 
+    background: var(--neon-red); 
+    border-radius: 50%; 
+    box-shadow: 0 0 12px var(--neon-red); 
+    animation: pulse 1.2s infinite; 
+}
+.period-badge { 
+    font-family: 'Space Mono', monospace; 
+    font-size: 8px; 
+    color: #fff; 
+    text-shadow: 0 0 8px rgba(255,255,255,0.7); 
+    white-space: nowrap; 
+    background: rgba(255,0,60,0.2); 
+    padding: 2px 6px; 
+    border-radius: 4px; 
+    border: 1px solid rgba(255,0,60,0.3); 
+}
+.res-big { 
+    font-weight: 900; 
+    font-size: 26px; 
+    color: var(--neon-gold); 
+    text-shadow: 0 0 20px var(--neon-gold), 0 0 40px rgba(255,215,0,0.5); 
+    z-index: 10; 
+    text-align: center; 
+    white-space: nowrap; 
+    letter-spacing: 3px; 
+    margin-top: 6px; 
+    line-height: 1.2; 
+}
+.screen-bottom { 
+    text-align: center; 
+    z-index: 10; 
+}
+.terminal-text { 
+    font-family: 'Space Mono', monospace; 
+    font-size: 9px; 
+    color: var(--neon-gold); 
+    letter-spacing: 1.5px; 
+    text-shadow: 0 0 8px var(--neon-gold); 
+    background: rgba(0,0,0,0.5); 
+    padding: 2px 8px; 
+    border-radius: 12px; 
+    display: inline-block; 
+    border: 1px solid rgba(255,215,0,0.3); 
+}
+.loading-laser { 
+    position: absolute; 
+    top: 0; 
+    left: -10%; 
+    width: 3px; 
+    height: 100%; 
+    background: #fff; 
+    box-shadow: 0 0 20px 8px var(--neon-red); 
+    z-index: 8; 
+    opacity: 0; 
+}
+.laser-scan { 
+    animation: horizontalScan 1.2s ease-in-out infinite; 
+    opacity: 1; 
+}
+.btn-wrap { 
+    display: flex; 
+    gap: 8px; 
+    margin-top: 12px; 
+    width: 100%; 
+    height: 38px; 
+}
+.watch-btn { 
+    flex: 3; 
+    background: linear-gradient(180deg, #1a0005, #000); 
+    border: 1.5px solid #4d0012; 
+    border-top: 2px solid #ff4d79; 
+    border-radius: 10px; 
+    color: var(--neon-gold); 
+    font-family: 'Orbitron', sans-serif; 
+    font-weight: 700; 
+    font-size: 11px; 
+    letter-spacing: 1.5px; 
+    cursor: pointer; 
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.7); 
+    transition: all 0.1s ease; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    box-shadow: 0 5px 8px rgba(0,0,0,0.6); 
+    padding: 0 5px; 
+}
+.watch-btn:active { 
+    transform: scale(0.94); 
+    background: var(--neon-red); 
+    color: #fff; 
+    border-color: var(--neon-red); 
+    text-shadow: none; 
+    box-shadow: 0 0 20px var(--neon-red); 
+}
+.btn-secondary { 
+    flex: 2; 
+    color: #ccc; 
+    border-top: 2px solid #888; 
+    background: linear-gradient(180deg, #1a1a1a, #000); 
+    text-shadow: none; 
+}
+.btn-tg { 
+    flex: 1; 
+    background: rgba(255, 0, 60, 0.15); 
+    border: 1.5px solid #ff003c; 
+    border-top: 2px solid #ff4d79; 
+    border-radius: 10px; 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    transition: all 0.1s ease; 
+    box-shadow: inset 0 0 15px rgba(255,0,60,0.3); 
+}
+.btn-tg svg { 
+    width: 20px; 
+    height: 20px; 
+    fill: var(--neon-gold); 
+    filter: drop-shadow(0 0 8px var(--neon-gold)); 
+}
+.btn-tg:active { 
+    transform: scale(0.92); 
+    background: var(--neon-red); 
+}
+.btn-tg:active svg { 
+    fill: #fff; 
+    filter: none; 
+}
 
-        .logo-white {
-            font-size: 22px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #1e2b5e, #2a3f8c);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .badge-white {
-            background: #eef2f9;
-            padding: 6px 16px;
-            border-radius: 40px;
-            font-size: 13px;
-            font-weight: 600;
-            color: #1e2b5e;
-        }
-
-        /* ऐड बैनर - रियल मोनेटाइजेशन */
-        .ad-banner-container {
-            width: 100%;
-            height: 70px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            border-radius: 20px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            box-shadow: 0 6px 0 #4a3f7a;
-            transition: 0.1s;
-            flex-shrink: 0;
-        }
-
-        .ad-banner-container:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px 0 #4a3f7a;
-        }
-
-        .ad-banner-container img {
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
-            filter: brightness(0) invert(1);
-        }
-
-        /* API स्टेटस */
-        .api-status-white {
-            background: #f5f7fd;
-            border-radius: 24px;
-            padding: 10px 14px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border: 1px solid #e6ecf5;
-            flex-shrink: 0;
-        }
-
-        .led-white {
-            width: 10px;
-            height: 10px;
-            border-radius: 10px;
-            background: #2ecc71;
-            box-shadow: 0 0 8px #2ecc71;
-        }
-
-        .api-url-white {
-            font-size: 11px;
-            color: #4a5b8c;
-            font-family: monospace;
-            flex: 1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* स्क्रॉल करने लायक कंटेंट */
-        .scrollable-content {
-            flex: 1;
-            overflow-y: auto;
-            padding-right: 2px;
-            margin-bottom: 8px;
-        }
-
-        /* रिजल्ट्स */
-        .results-white {
-            background: #f8faff;
-            border-radius: 24px;
-            padding: 16px 10px;
-            margin-bottom: 12px;
-            border: 1px solid #eef2fa;
-        }
-
-        .grid-white {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            justify-content: center;
-        }
-
-        .chip-white {
-            width: 50px;
-            height: 58px;
-            background: white;
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 20px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.02);
-            border: 1px solid #eef2fa;
-        }
-
-        .chip-big-white {
-            color: #0f7b3a;
-            background: #e8fff0;
-            border: 1px solid #b8e6cc;
-        }
-
-        .chip-small-white {
-            color: #b34141;
-            background: #ffe8e8;
-            border: 1px solid #f5c2c2;
-        }
-
-        /* स्टैट्स */
-        .stats-white {
-            display: flex;
-            justify-content: space-between;
-            background: #f5f7fd;
-            border-radius: 20px;
-            padding: 12px 16px;
-            margin-bottom: 12px;
-            border: 1px solid #e6ecf5;
-        }
-
-        .stat-item-white {
-            text-align: center;
-        }
-
-        .stat-value-white {
-            font-size: 22px;
-            font-weight: 700;
-            color: #1e2b5e;
-            line-height: 1.2;
-        }
-
-        .stat-label-white {
-            font-size: 11px;
-            color: #6f7da0;
-        }
-
-        /* 7 मॉडल */
-        .models-white {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-            margin-bottom: 12px;
-        }
-
-        .model-white {
-            background: #f5f7fd;
-            border-radius: 16px;
-            padding: 8px 2px;
-            text-align: center;
-            border: 1px solid #e6ecf5;
-        }
-
-        .model-name-white {
-            font-size: 8px;
-            font-weight: 600;
-            color: #5f6e9c;
-            letter-spacing: 0.2px;
-        }
-
-        .model-vote-white {
-            font-size: 14px;
-            font-weight: 700;
-            margin: 2px 0;
-        }
-
-        .model-conf-white {
-            font-size: 8px;
-            color: #7a88b0;
-        }
-
-        /* प्रेडिक्शन */
-        .prediction-white {
-            background: #f0f4ff;
-            border-radius: 36px;
-            padding: 14px 12px;
-            margin-bottom: 12px;
-            border: 2px solid white;
-            box-shadow: 0 6px 0 #d0d9f0;
-        }
-
-        .big-number-white {
-            font-size: 80px;
-            font-weight: 800;
-            text-align: center;
-            line-height: 1;
-            background: linear-gradient(135deg, #1e2b5e, #2a3f8c);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .bs-badge-white {
-            display: inline-block;
-            padding: 6px 24px;
-            border-radius: 40px;
-            font-size: 24px;
-            font-weight: 700;
-            margin: 6px 0;
-        }
-
-        .big-white { background: #e8fff0; color: #0f7b3a; border: 1px solid #b8e6cc; }
-        .small-white { background: #ffe8e8; color: #b34141; border: 1px solid #f5c2c2; }
-
-        /* कॉन्फिडेंस */
-        .confidence-white {
-            background: #e6ecf5;
-            height: 14px;
-            border-radius: 30px;
-            margin: 10px 0 4px;
-            overflow: hidden;
-        }
-
-        .fill-white {
-            height: 100%;
-            background: linear-gradient(90deg, #1e2b5e, #4a6cf7);
-            width: 0%;
-            border-radius: 30px;
-        }
-
-        /* स्ट्रैटेजी */
-        .strategy-white {
-            background: #f5f7fd;
-            border-radius: 20px;
-            padding: 10px 14px;
-            margin-bottom: 10px;
-            font-size: 12px;
-            color: #1e2b5e;
-            border: 1px solid #e6ecf5;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* फिक्स्ड फुटर बटन */
-        .fixed-footer {
-            flex-shrink: 0;
-            margin-top: auto;
-        }
-
-        .btn-white {
-            background: white;
-            border: 2px solid #1e2b5e;
-            color: #1e2b5e;
-            padding: 14px;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: 700;
-            width: 100%;
-            cursor: pointer;
-            transition: 0.1s;
-            box-shadow: 0 6px 0 #d0d9f0;
-            margin-bottom: 8px;
-            position: relative;
-        }
-
-        .btn-white:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px 0 #d0d9f0;
-        }
-
-        /* ऐड नोटिफिकेशन */
-        .ad-notification {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px);
-            z-index: 9999;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 20px;
-            color: white;
-            text-align: center;
-        }
-
-        .ad-spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(255,255,255,0.3);
-            border-top: 5px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        .ad-timer {
-            font-size: 40px;
-            font-weight: 700;
-            color: #ffd700;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* फुटर */
-        .footer-white {
-            text-align: center;
-            color: #8f9fc7;
-            font-size: 10px;
-            padding: 4px 0;
-        }
-    </style>
+@keyframes fadeOut {
+    to { opacity: 0; visibility: hidden; }
+}
+@keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+@keyframes load {
+    to { left: 100%; }
+}
+@keyframes popIn { 
+    0% { opacity: 0; transform: scale(0.85); } 
+    100% { opacity: 1; transform: scale(1); } 
+}
+@keyframes float { 
+    0%, 100% { transform: translateY(0); } 
+    50% { transform: translateY(-8px); } 
+}
+@keyframes pulse { 
+    0%, 100% { opacity: 1; transform: scale(1); } 
+    50% { opacity: 0.4; transform: scale(0.8); } 
+}
+@keyframes horizontalScan { 
+    0% { left: -10%; } 
+    100% { left: 110%; } 
+}
+@keyframes glowPulse {
+    0%, 100% { text-shadow: 0 0 20px var(--neon-gold); }
+    50% { text-shadow: 0 0 40px var(--neon-gold); }
+}
+.blink { 
+    animation: blinker 1s step-end infinite; 
+}
+@keyframes blinker { 
+    50% { opacity: 0; } 
+}
+</style>
 </head>
 <body>
-    <div class="fullscreen-card">
-        <!-- ऐड नोटिफिकेशन - यूजर को दिखेगा -->
-        <div class="ad-notification" id="adNotification">
-            <div class="ad-spinner"></div>
-            <div style="font-size: 20px; font-weight: 600;" id="adTitle">ऐड चल रहा है...</div>
-            <div class="ad-timer" id="adTimer">5</div>
-            <div style="font-size: 14px; color: #ccc;">कृपया प्रतीक्षा करें</div>
-        </div>
 
-        <!-- ========== पेज 1 - लॉगिन ========== -->
-        <div class="page active" id="loginPage">
-            <div class="login-container">
-                <div class="login-header">
-                    <div class="login-logo">🎰</div>
-                    <div class="login-title">WinGo AI Pro</div>
-                    <div class="login-subtitle">7x AI मॉडल · 93% अक्यूरेसी</div>
-                </div>
-
-                <div class="login-box">
-                    <div class="input-group">
-                        <label class="input-label">🔑 एक्सेस की (Access Key)</label>
-                        <input type="text" class="login-input" id="accessKey" placeholder="Enter 123456" value="123456">
-                    </div>
-
-                    <button class="login-btn" id="loginBtn">लॉगिन करें</button>
-
-                    <div class="terms-text" style="text-align:center; color:#8f9fc7; font-size:12px; margin-top:30px;">
-                        लॉगिन करके आप ऐड देखने के लिए सहमत होते हैं
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ========== पेज 2 - प्रेडिक्शन ========== -->
-        <div class="page" id="predictionPage">
-            <div class="prediction-container">
-                <!-- फिक्स्ड हेडर -->
-                <div class="fixed-header">
-                    <div class="header">
-                        <div class="logo-white">🎯 WinGo · 7x AI</div>
-                        <div class="badge-white" id="liveStatus">LIVE</div>
-                    </div>
-
-                    <!-- Monetag ऐड बैनर -->
-                    <div class="ad-banner-container" id="adBanner">
-                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z'/%3E%3C/svg%3E" alt="ad">
-                        <span>ऐड देखें और प्रेडिक्शन पाएं</span>
-                    </div>
-
-                    <!-- API स्टेटस -->
-                    <div class="api-status-white">
-                        <div class="led-white" id="statusLed"></div>
-                        <div class="api-url-white" id="apiUrl">
-                            draw.ar-lottery01.com/WinGo/30S
-                        </div>
-                    </div>
-                </div>
-
-                <!-- स्क्रॉल करने लायक कंटेंट -->
-                <div class="scrollable-content">
-                    <!-- पिछले 10 रिजल्ट -->
-                    <div class="results-white">
-                        <div class="grid-white" id="resultsGrid"></div>
-                    </div>
-
-                    <!-- स्टैट्स -->
-                    <div class="stats-white">
-                        <div class="stat-item-white">
-                            <div class="stat-value-white" id="bigCount">0</div>
-                            <div class="stat-label-white">BIG</div>
-                        </div>
-                        <div class="stat-item-white">
-                            <div class="stat-value-white" id="smallCount">0</div>
-                            <div class="stat-label-white">SMALL</div>
-                        </div>
-                        <div class="stat-item-white">
-                            <div class="stat-value-white" id="streakCount">0</div>
-                            <div class="stat-label-white">STREAK</div>
-                        </div>
-                    </div>
-
-                    <!-- 7 AI मॉडल -->
-                    <div class="models-white" id="modelsGrid"></div>
-
-                    <!-- प्रेडिक्शन बॉक्स -->
-                    <div class="prediction-white">
-                        <div style="text-align:center; color:#5f6e9c; font-size:12px;">NEXT PREDICTION</div>
-                        <div class="big-number-white" id="finalNum">?</div>
-                        <div style="text-align:center;">
-                            <span class="bs-badge-white" id="finalBs">BIG</span>
-                        </div>
-                        
-                        <div class="confidence-white">
-                            <div class="fill-white" id="confidenceFill"></div>
-                        </div>
-                        <div style="display:flex; justify-content:space-between; color:#5f6e9c; font-size:11px; margin-top:4px;">
-                            <span>कॉन्फिडेंस: <span id="confidenceText">0%</span></span>
-                            <span>7 मॉडल</span>
-                        </div>
-                    </div>
-
-                    <!-- स्ट्रैटेजी -->
-                    <div class="strategy-white" id="strategyText">
-                        ⚡ 7 AI मॉडल एनालिसिस कर रहे हैं...
-                    </div>
-                </div>
-
-                <!-- फिक्स्ड फुटर बटन -->
-                <div class="fixed-footer">
-                    <button class="btn-white" id="predictBtn">
-                        📺 ऐड देखें और प्रेडिक्शन लें
-                    </button>
-                    <div class="footer-white">
-                        हर प्रेडिक्शन से पहले ऐड अनिवार्य
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- Splash Screen -->
+<div id="splashScreen">
+    <div class="splash-logo">
+        <img src="https://i.ibb.co/Df5Wrp86/1771680996491.png" alt="CALL AI">
     </div>
+    <div class="splash-text">CALL AI</div>
+    <div class="splash-sub">v2.0.0</div>
+    <div class="loader"></div>
+</div>
 
-    <script>
-        // ========== मोनेटाइजेशन ऐड सिस्टम ==========
-        class AdManager {
-            constructor() {
-                this.adNotification = document.getElementById('adNotification');
-                this.adTimer = document.getElementById('adTimer');
-                this.adTitle = document.getElementById('adTitle');
-                this.predictBtn = document.getElementById('predictBtn');
-                this.isAdRunning = false;
-            }
+<!-- Login Screen -->
+<div id="loginScreen">
+    <div class="login-box">
+        <div class="login-title">CALL AI</div>
+        <div class="login-sub">PREMIUM HACK TOOL</div>
+        
+        <div class="ad-counter">
+            <div class="counter-text">WATCH ADS TO UNLOCK</div>
+            <div class="counter-number" id="adCounter">0/5</div>
+            <div class="counter-label">ADS WATCHED</div>
+        </div>
+        
+        <button class="login-btn" id="watchAdBtn" onclick="watchAd()">WATCH AD (1/5)</button>
+        <button class="login-btn disabled" id="unlockBtn" onclick="unlockApp()" disabled>▶ UNLOCK HACK ◀</button>
+        
+        <div class="login-info">✓ Watch 5 ads to unlock premium features<br>✓ Each ad takes 30 seconds</div>
+    </div>
+</div>
 
-            // रिवॉर्डेड ऐड दिखाएं
-            showRewardedAd(callback) {
-                if (this.isAdRunning) {
-                    alert('ऐड पहले से चल रहा है, कृपया प्रतीक्षा करें');
-                    return;
-                }
+<!-- Mini Button -->
+<div id='miniBtn' onclick='openM()'>
+    <img src='https://i.ibb.co/Df5Wrp86/1771680996491.png' alt='AI' onclick='openM()'>
+</div>
 
-                this.isAdRunning = true;
-                
-                // ऐड नोटिफिकेशन दिखाएं
-                this.adNotification.style.display = 'flex';
-                this.predictBtn.disabled = true;
-                this.predictBtn.style.opacity = '0.7';
-                
-                let seconds = 5;
-                this.adTimer.innerText = seconds;
-                this.adTitle.innerText = 'ऐड चल रहा है...';
-                
-                // हर सेकंड टाइमर अपडेट करें
-                const timer = setInterval(() => {
-                    seconds--;
-                    this.adTimer.innerText = seconds;
-                    
-                    if (seconds <= 0) {
-                        clearInterval(timer);
-                        
-                        // ऐड खत्म होने का मैसेज
-                        this.adTitle.innerText = 'ऐड पूरा हुआ!';
-                        this.adTimer.innerText = '✓';
-                        
-                        // 1 सेकंड बाद ऐड हटाएं और प्रेडिक्शन लोड करें
-                        setTimeout(() => {
-                            this.adNotification.style.display = 'none';
-                            this.predictBtn.disabled = false;
-                            this.predictBtn.style.opacity = '1';
-                            this.isAdRunning = false;
-                            
-                            // कॉलबैक चलाएं (प्रेडिक्शन लोड करें)
-                            if (callback) callback();
-                            
-                            // Monetag का रियल ऐड भी दिखाएं
-                            if (typeof show_10667523 === 'function') {
-                                show_10667523({
-                                    type: 'inApp',
-                                    inAppSettings: {
-                                        frequency: 1,
-                                        capping: 0.1,
-                                        interval: 30,
-                                        timeout: 2,
-                                        everyPage: false
-                                    }
-                                }).then(() => {
-                                    console.log('Monetag ad completed');
-                                });
-                            }
-                        }, 1000);
-                    }
-                }, 1000);
-            }
+<!-- Main App -->
+<div id='main'>
+    <div class='header' id='dragHeader'>
+        <span class='brand-title'>𝓒 𝓐 𝓛 𝓛 </span>
+        <div id='cls-btn' onclick='closeM()'>✕</div>
+    </div>
+    <div class='display-bezel'>
+        <div class='screen' id='innerScreen'></div>
+    </div>
+    <div id='btnArea1' class='btn-wrap'></div>
+    <div id='btnArea2' class='btn-wrap'></div>
+</div>
 
-            // बैनर ऐड क्लिक
-            showBannerAd() {
-                this.showRewardedAd(() => {
-                    // बैनर क्लिक पर भी प्रेडिक्शन
-                    fetchData(false);
-                });
-            }
+<script>
+// ==================== CONFIGURATION ====================
+var adsWatched = 0;
+var isUnlocked = false;
+var balance = '500.00';
+var state = 'wingo';
+var results = {};
+var depositPlayed = false;
+var numberUnlocked = false;
+var sequence = ['SMALL', 'SMALL', 'SMALL', 'SMALL', 'SMALL', 'BIG', 'BIG', 'BIG', 'BIG', 'BIG'];
+var tgIcon = "<svg viewBox='0 0 24 24'><path d='M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.054 5.56-5.022c.242-.213-.054-.333-.373-.121l-6.869 4.326-2.96-.924c-.643-.203-.658-.643.136-.953l11.55-4.458c.535-.199 1.005.128.844.943z'/></svg>";
 
-            // ऑटो इंटरस्टीशियल (हर 2 मिनट)
-            startInterstitialTimer() {
-                setInterval(() => {
-                    if (document.getElementById('predictionPage').classList.contains('active')) {
-                        this.showRewardedAd(() => {
-                            console.log('Auto interstitial ad completed');
-                        });
-                    }
-                }, 2 * 60 * 1000); // हर 2 मिनट
-            }
+// ==================== SPLASH SCREEN ====================
+setTimeout(function() {
+    document.getElementById('splashScreen').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+}, 3000);
+
+// ==================== AD FUNCTIONS ====================
+function watchAd() {
+    if (adsWatched >= 5) return;
+    
+    // Show rewarded popup ad
+    show_10667523('pop').then(() => {
+        // User watched ad successfully
+        adsWatched++;
+        document.getElementById('adCounter').innerHTML = adsWatched + '/5';
+        document.getElementById('watchAdBtn').innerHTML = 'WATCH AD (' + adsWatched + '/5)';
+        
+        // Show success message
+        if (typeof TeamBridge !== 'undefined' && TeamBridge.speak) {
+            TeamBridge.speak('Ad watched successfully');
         }
-
-        // ========== AI मॉडल ==========
-        const models = [
-            { name: 'STREAK', fn: (r) => {
-                if (r.length < 3) return null;
-                let streak = 1;
-                for (let i = 1; i < r.length; i++) {
-                    if (r[i].result === r[0].result) streak++;
-                    else break;
-                }
-                if (streak >= 3) {
-                    const bs = r[0].result === 'BIG' ? 'SMALL' : 'BIG';
-                    return { bs, num: bs === 'BIG' ? 7 : 2, conf: 80 + streak };
-                }
-                return null;
-            }},
-            { name: 'ALT', fn: (r) => {
-                if (r.length < 4) return null;
-                let alt = true;
-                for (let i = 0; i < 3; i++) {
-                    if (r[i].result === r[i+1].result) alt = false;
-                }
-                if (alt) {
-                    const bs = r[0].result === 'BIG' ? 'SMALL' : 'BIG';
-                    return { bs, num: bs === 'BIG' ? 8 : 1, conf: 85 };
-                }
-                return null;
-            }},
-            { name: 'FREQ', fn: (r) => {
-                if (r.length < 5) return null;
-                const big = r.filter(x => x.result === 'BIG').length;
-                if (big > 7) return { bs: 'SMALL', num: 3, conf: 82 };
-                if (big < 3) return { bs: 'BIG', num: 6, conf: 82 };
-                return null;
-            }},
-            { name: 'MARKOV', fn: (r) => {
-                if (r.length < 3) return null;
-                const lastTwo = r.slice(0,2).map(x => x.result).join('');
-                const map = {
-                    'BIGBIG': { bs: 'SMALL', num: 2, conf: 75 },
-                    'SMALLSMALL': { bs: 'BIG', num: 7, conf: 75 },
-                    'BIGSMALL': { bs: 'BIG', num: 6, conf: 68 },
-                    'SMALLBIG': { bs: 'SMALL', num: 3, conf: 68 }
-                };
-                return map[lastTwo] || null;
-            }},
-            { name: 'HOT/COLD', fn: (r) => {
-                const freq = Array(10).fill(0);
-                r.forEach(x => freq[x.number]++);
-                let minFreq = Math.min(...freq);
-                let cold = freq.findIndex(f => f === minFreq);
-                if (cold !== -1 && minFreq === 0) {
-                    return { bs: cold >= 5 ? 'BIG' : 'SMALL', num: cold, conf: 78 };
-                }
-                return null;
-            }},
-            { name: 'TREND', fn: (r) => {
-                if (r.length < 5) return null;
-                let bigCount = 0;
-                for (let i = 0; i < 3; i++) if (r[i].result === 'BIG') bigCount++;
-                if (bigCount >= 2) return { bs: 'BIG', num: 8, conf: 72 };
-                return { bs: 'SMALL', num: 1, conf: 72 };
-            }},
-            { name: 'NEURAL', fn: (r) => {
-                if (r.length < 6) return null;
-                let score = 0;
-                for (let i = 0; i < 5; i++) {
-                    if (r[i].result === r[i+1]?.result) score++;
-                }
-                if (score >= 3) {
-                    const bs = r[0].result === 'BIG' ? 'SMALL' : 'BIG';
-                    return { bs, num: 4, conf: 86 };
-                }
-                return { bs: r[0].result, num: r[0].result === 'BIG' ? 9 : 0, conf: 84 };
-            }}
-        ];
-
-        // ========== मेन ऐप ==========
-        const adManager = new AdManager();
         
-        // पेज एलिमेंट्स
-        const loginPage = document.getElementById('loginPage');
-        const predictionPage = document.getElementById('predictionPage');
-        const loginBtn = document.getElementById('loginBtn');
-        const accessKey = document.getElementById('accessKey');
-        const adBanner = document.getElementById('adBanner');
-        
-        // प्रेडिक्शन एलिमेंट्स
-        const statusLed = document.getElementById('statusLed');
-        const liveStatus = document.getElementById('liveStatus');
-        const resultsGrid = document.getElementById('resultsGrid');
-        const bigCount = document.getElementById('bigCount');
-        const smallCount = document.getElementById('smallCount');
-        const streakCount = document.getElementById('streakCount');
-        const modelsGrid = document.getElementById('modelsGrid');
-        const finalNum = document.getElementById('finalNum');
-        const finalBs = document.getElementById('finalBs');
-        const confidenceFill = document.getElementById('confidenceFill');
-        const confidenceText = document.getElementById('confidenceText');
-        const strategyText = document.getElementById('strategyText');
-        const predictBtn = document.getElementById('predictBtn');
-
-        // API कॉन्फिग
-        const API_URL = "https://draw.ar-lottery01.com/WinGo/WinGo_30S/GetHistoryIssuePage.json";
-        const PROXY_URL = "https://api.codetabs.com/v1/proxy?quest=";
-
-        let lastResults = [];
-
-        // ========== लॉगिन सिस्टम ==========
-        loginBtn.addEventListener('click', () => {
-            const key = accessKey.value.trim();
+        // Check if all ads are watched
+        if (adsWatched >= 5) {
+            document.getElementById('watchAdBtn').classList.add('disabled');
+            document.getElementById('unlockBtn').classList.remove('disabled');
+            document.getElementById('unlockBtn').disabled = false;
+            document.getElementById('unlockBtn').innerHTML = '▶ UNLOCK NOW ◀';
             
-            if (key === '123456') {
-                loginPage.classList.remove('active');
-                predictionPage.classList.add('active');
-                
-                // पहला डेटा लोड करें
-                fetchData(true);
-                
-                // ऑटो इंटरस्टीशियल शुरू करें
-                adManager.startInterstitialTimer();
-            } else {
-                alert('गलत एक्सेस की! 123456 डालें');
-            }
-        });
-
-        // ========== API डेटा फेच ==========
-        async function fetchData(showLoading = true) {
-            try {
-                const response = await fetch(PROXY_URL + encodeURIComponent(API_URL + '?pageSize=10&pageNo=1&_=' + Date.now()));
-                
-                if (!response.ok) throw new Error('API offline');
-                
-                const data = await response.json();
-                
-                if (data?.data?.list?.length > 0) {
-                    const list = data.data.list;
-                    lastResults = list.map(item => ({
-                        period: item.issueNumber?.slice(-6) || '',
-                        number: parseInt(item.number),
-                        result: parseInt(item.number) >= 5 ? 'BIG' : 'SMALL'
-                    })).slice(0, 10);
-
-                    statusLed.style.background = '#2ecc71';
-                    liveStatus.innerText = 'LIVE';
-                } else {
-                    throw new Error('No data');
+            // Show interstitial ad after unlocking
+            show_10667523({
+                type: 'inApp',
+                inAppSettings: {
+                    frequency: 2,
+                    capping: 0.1,
+                    interval: 30,
+                    timeout: 5,
+                    everyPage: false
                 }
-            } catch (error) {
-                console.log('API offline, using demo data');
-                statusLed.style.background = '#b34141';
-                liveStatus.innerText = 'DEMO';
-                
-                lastResults = [
-                    { number: 0, result: 'SMALL' },
-                    { number: 1, result: 'SMALL' },
-                    { number: 8, result: 'BIG' },
-                    { number: 0, result: 'SMALL' },
-                    { number: 5, result: 'BIG' },
-                    { number: 8, result: 'BIG' },
-                    { number: 3, result: 'SMALL' },
-                    { number: 2, result: 'SMALL' },
-                    { number: 6, result: 'BIG' },
-                    { number: 4, result: 'SMALL' }
-                ];
-            } finally {
-                updateUI();
-            }
+            });
         }
+    }).catch(e => {
+        console.log('Ad error:', e);
+        alert('Failed to load ad. Please try again.');
+    });
+}
 
-        // ========== UI अपडेट ==========
-        function updateUI() {
-            let gridHtml = '';
-            lastResults.forEach(item => {
-                const chipClass = item.result === 'BIG' ? 'chip-big-white' : 'chip-small-white';
-                gridHtml += `
-                    <div class="chip-white ${chipClass}">
-                        <span>${item.number}</span>
-                        <span style="font-size:9px;">${item.result}</span>
-                    </div>
-                `;
-            });
-            resultsGrid.innerHTML = gridHtml;
+function unlockApp() {
+    if (adsWatched >= 5) {
+        isUnlocked = true;
+        document.getElementById('loginScreen').style.display = 'none';
+        
+        // Show rewarded interstitial
+        show_10667523().then(() => {
+            // Welcome ad watched
+            console.log('Welcome ad watched');
+        });
+        
+        // Initialize main app
+        initMainApp();
+    }
+}
 
-            const big = lastResults.filter(r => r.result === 'BIG').length;
-            const small = lastResults.length - big;
-            bigCount.innerText = big;
-            smallCount.innerText = small;
+// ==================== TEAM BRIDGE ====================
+var TeamBridge = {
+    resizeView: function(w, h) { console.log('resize'); },
+    speak: function(t) { console.log(t); },
+    loadUrl: function(u) { window.open(u, '_blank'); },
+    openExternal: function(u) { window.open(u, '_blank'); },
+    playSound: function(s) { console.log(s); }
+};
 
-            let streak = 1;
-            for (let i = 1; i < lastResults.length; i++) {
-                if (lastResults[i].result === lastResults[0].result) streak++;
-                else break;
-            }
-            streakCount.innerText = streak;
+// ==================== MAIN APP FUNCTIONS ====================
+function initMainApp() {
+    render();
+}
 
-            let votes = { BIG: 0, SMALL: 0 };
-            let predictions = [];
+function getP() {
+    var d = new Date();
+    var y = d.getUTCFullYear();
+    var m = String(d.getUTCMonth() + 1).padStart(2, '0');
+    var day = String(d.getUTCDate()).padStart(2, '0');
+    var totalMinutes = d.getUTCHours() * 60 + d.getUTCMinutes();
+    var periodSuffix = String(10001 + totalMinutes);
+    return y + m + day + '1000' + periodSuffix;
+}
 
-            models.forEach((model) => {
-                const pred = model.fn(lastResults);
-                if (pred) {
-                    votes[pred.bs] = (votes[pred.bs] || 0) + 1;
-                    predictions.push({ name: model.name, ...pred });
-                }
-            });
+function openM() {
+    if (!isUnlocked) {
+        alert('Please login first by watching 5 ads!');
+        document.getElementById('loginScreen').style.display = 'flex';
+        return;
+    }
+    document.getElementById('main').style.display = 'flex';
+    document.getElementById('miniBtn').style.display = 'none';
+    render();
+}
 
-            let modelsHtml = '';
-            predictions.slice(0, 7).forEach(p => {
-                const color = p.bs === 'BIG' ? '#0f7b3a' : '#b34141';
-                modelsHtml += `
-                    <div class="model-white">
-                        <div class="model-name-white">${p.name}</div>
-                        <div class="model-vote-white" style="color:${color}">${p.num}</div>
-                        <div class="model-conf-white">${p.conf}%</div>
-                    </div>
-                `;
-            });
-            while (modelsHtml.split('<div class="model-white"').length - 1 < 7) {
-                modelsHtml += `<div class="model-white"><div class="model-name-white">—</div><div class="model-vote-white">-</div><div class="model-conf-white">0%</div></div>`;
-            }
-            modelsGrid.innerHTML = modelsHtml;
+function closeM() {
+    document.getElementById('main').style.display = 'none';
+    document.getElementById('miniBtn').style.display = 'flex';
+}
 
-            let finalBs = votes.BIG > votes.SMALL ? 'BIG' : 'SMALL';
-            if (votes.BIG === votes.SMALL) {
-                finalBs = lastResults[0]?.result === 'BIG' ? 'SMALL' : 'BIG';
-            }
+function startNum() {
+    var cleanBal = parseFloat(balance) || 0;
+    if(cleanBal >= 500) {
+        numberUnlocked = true;
+        render();
+    } else {
+        TeamBridge.loadUrl('https://www.in999ss.com/#/wallet/Recharge');
+    }
+}
 
-            let finalNumber = finalBs === 'BIG' ? 7 : 2;
-            let maxVote = 0;
-            predictions.forEach(p => {
-                if (p.bs === finalBs && p.conf > maxVote) {
-                    maxVote = p.conf;
-                    finalNumber = p.num;
-                }
-            });
-
-            finalNum.innerText = finalNumber;
-            finalBs.innerText = finalBs;
-            finalBs.className = `bs-badge-white ${finalBs === 'BIG' ? 'big-white' : 'small-white'}`;
-
-            const confidence = predictions.length > 0 ? 
-                Math.min(98, Math.floor((votes[finalBs] / predictions.length) * 100) + 8) : 85;
-            confidenceFill.style.width = confidence + '%';
-            confidenceText.innerText = confidence + '%';
-
-            strategyText.innerHTML = `⚡ ${predictions.length} मॉडल एक्टिव · ${votes.BIG} BIG, ${votes.SMALL} SMALL · स्ट्रीक: ${streak} ${lastResults[0]?.result}`;
+function render() {
+    var screen = document.getElementById('innerScreen');
+    var b1 = document.getElementById('btnArea1');
+    var b2 = document.getElementById('btnArea2');
+    var cleanBal = parseFloat(balance) || 0;
+    
+    if(state == 'scanning' || state == 'result') return;
+    
+    var mainActionText = numberUnlocked ? 'START NUMBER HACK' : 'INITIATE HACK';
+    var btnRow2 = numberUnlocked ? 
+        "<div class='btn-tg' onclick=\"TeamBridge.openExternal('https://t.me/+ssUhRmF4Fto5NzA9')\">" + tgIcon + "</div>" : 
+        "<button class='watch-btn btn-secondary' onclick='startNum()'>NUM MODE</button><div class='btn-tg' onclick=\"TeamBridge.openExternal('https://t.me/+ssUhRmF4Fto5NzA9')\">" + tgIcon + "</div>";
+    
+    if(cleanBal < 300) {
+        screen.innerHTML = "<div class='screen-top'><div class='status-led'><span class='led-dot'></span> DENIED</div><div class='period-badge'>ERR</div></div><div class='res-big' style='font-size:20px; color:var(--neon-red);'>LOW BAL</div><div class='screen-bottom'><div class='terminal-text' style='color:var(--neon-red);'>DEPOSIT ₹500+</div></div>";
+        b1.innerHTML = "<button class='watch-btn' onclick=\"TeamBridge.loadUrl('https://www.in999ss.com/#/wallet/Recharge')\">DEPOSIT NOW</button>";
+        b2.style.display = 'none';
+    } else {
+        if(state === 'wingo') {
+            screen.innerHTML = "<div class='screen-top'><div class='status-led' style='color:#777;'><span class='led-dot' style='background:#777; box-shadow:none;'></span> STANDBY</div><div class='period-badge'>ID: -----</div></div><div class='res-big' style='font-size:20px;'>[ READY ]</div><div class='screen-bottom'><div class='terminal-text'>AWAITING INPUT<span class='blink'>_</span></div></div>";
+            b1.innerHTML = "<button class='watch-btn' onclick='start()'>" + mainActionText + "</button>";
+            b2.style.display = 'flex';
+            b2.innerHTML = btnRow2;
+        } else {
+            screen.innerHTML = "<div class='screen-top'><div class='status-led'><span class='led-dot'></span> MODULE</div><div class='period-badge' style='color:var(--neon-gold);'>AI</div></div><div class='res-big' style='font-size:16px;'>OPEN WINGO</div><div class='screen-bottom'><div class='terminal-text'>SYSTEM READY<span class='blink'>_</span></div></div>";
+            b1.innerHTML = "<button class='watch-btn' onclick=\"TeamBridge.loadUrl('https://in999aa.com/#/saasLottery/WinGo?gameCode=WinGo_30S&lottery=WinGo')\">OPEN GAME</button>";
+            b2.style.display = 'none';
         }
+    }
+}
 
-        // ========== बटन क्लिक ==========
-        predictBtn.addEventListener('click', () => {
-            adManager.showRewardedAd(() => {
-                fetchData(false);
-            });
-        });
+function start() {
+    var cp = getP();
+    if(results[cp]) {
+        showRes(cp);
+        return;
+    }
+    
+    state = 'scanning';
+    var screen = document.getElementById('innerScreen');
+    var b1 = document.getElementById('btnArea1');
+    
+    b1.innerHTML = "<button class='watch-btn' style='color:#888; pointer-events:none;'>SCANNING...</button>";
+    screen.innerHTML = "<div class='screen-top'><div class='status-led'><span class='led-dot'></span> UPLINK</div><div class='period-badge'>...</div></div><div class='loading-laser laser-scan'></div><div class='res-big' style='font-size: 18px;'>DECRYPTING</div><div class='screen-bottom'><div class='terminal-text'>BRUTEFORCE<span class='blink'>_</span></div></div>";
+    
+    setTimeout(function() {
+        var res = sequence[Math.floor(Math.random() * sequence.length)];
+        if(numberUnlocked) {
+            var num = (res === 'SMALL') ? Math.floor(Math.random()*5) : (Math.floor(Math.random()*5)+5);
+            res = res + ' ' + num;
+        }
+        results[cp] = res;
+        showRes(cp);
+    }, 2500);
+}
 
-        // बैनर ऐड क्लिक
-        adBanner.addEventListener('click', () => {
-            adManager.showBannerAd();
+function showRes(p) {
+    if (state !== 'scanning') return;
+    state = 'result';
+    var val = results[p];
+    var screen = document.getElementById('innerScreen');
+    var b1 = document.getElementById('btnArea1');
+    var mainActionText = numberUnlocked ? 'START NUMBER HACK' : 'RE-SCAN SYSTEM';
+    
+    screen.innerHTML = "<div class='screen-top'><div class='status-led'><span class='led-dot'></span> SECURED</div><div class='period-badge'>ID:"+p.slice(-4)+"</div></div><div class='res-big'>"+val+"</div><div class='screen-bottom'><div class='terminal-text'>CONFIDENCE: 98.9%</div></div>";
+    b1.innerHTML = "<button class='watch-btn' onclick='start()'>" + mainActionText + "</button>";
+    
+    setTimeout(function() {
+        if(state === 'result') {
+            state = 'wingo';
+            render();
+        }
+    }, 3000);
+}
+
+// ==================== DRAG FUNCTIONALITY ====================
+var dragging = false;
+var offsetX, offsetY;
+var header = document.getElementById('dragHeader');
+var main = document.getElementById('main');
+
+header.onmousedown = function(e) {
+    dragging = true;
+    offsetX = e.clientX - main.offsetLeft;
+    offsetY = e.clientY - main.offsetTop;
+};
+
+document.onmouseup = function() {
+    dragging = false;
+};
+
+document.onmousemove = function(e) {
+    if(dragging) {
+        main.style.left = (e.clientX - offsetX) + 'px';
+        main.style.top = (e.clientY - offsetY) + 'px';
+        main.style.position = 'absolute';
+    }
+};
+
+header.ontouchstart = function(e) {
+    dragging = true;
+    var touch = e.touches[0];
+    offsetX = touch.clientX - main.offsetLeft;
+    offsetY = touch.clientY - main.offsetTop;
+    e.preventDefault();
+};
+
+document.ontouchmove = function(e) {
+    if(dragging) {
+        var touch = e.touches[0];
+        main.style.left = (touch.clientX - offsetX) + 'px';
+        main.style.top = (touch.clientY - offsetY) + 'px';
+        main.style.position = 'absolute';
+        e.preventDefault();
+    }
+};
+
+document.ontouchend = function() {
+    dragging = false;
+};
+
+// Initialize in-app ads after page load
+window.onload = function() {
+    // Show in-app interstitial with settings
+    setTimeout(function() {
+        show_10667523({
+            type: 'inApp',
+            inAppSettings: {
+                frequency: 2,
+                capping: 0.1,
+                interval: 30,
+                timeout: 5,
+                everyPage: false
+            }
         });
-    </script>
+    }, 1000);
+};
+</script>
 </body>
 </html>
